@@ -2,9 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/fav_menu"
-        android:icon="@mipmap/ic_favorite_black_24dp"
+        android:id="@+id/fav_badge"
         android:title="Favourite"
-        android:actionLayout="@layout/badge_layout"
-        app:showAsAction="always" />
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:icon="@mipmap/ic_favorite_black_24dp"/>
+    <item
+        android:id="@+id/bas_badge"
+        android:title="Basket"
+        android:orderInCategory="200"
+        app:showAsAction="always"
+        android:icon="@mipmap/ic_shop_black_24dp"/>
 </menu>

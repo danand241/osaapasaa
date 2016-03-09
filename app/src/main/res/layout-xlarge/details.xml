@@ -150,21 +150,4 @@
         android:layout_above="@+id/description_detail"
         android:layout_toRightOf="@+id/xl"
         />
-    <mehdi.sakout.fancybuttons.FancyButton
-        android:id="@+id/btn_preview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        fancy:fb_borderColor="#FFFFFF"
-        fancy:fb_borderWidth="1dp"
-        fancy:fb_defaultColor="#FF69B4"
-        fancy:fb_focusColor="#9bd823"
-        fancy:fb_radius="30dp"
-        fancy:fb_text="BUY"
-        fancy:fb_textColor="#FFFFFF"
-        android:paddingBottom="10dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="10dp"
-        android:layout_margin="20dp"
-        android:layout_below="@+id/description_detail" />
 </RelativeLayout>

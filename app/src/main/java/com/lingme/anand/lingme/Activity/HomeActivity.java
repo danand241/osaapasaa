@@ -1,8 +1,10 @@
 package com.lingme.anand.lingme.Activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
@@ -10,8 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,8 +22,10 @@ import com.lingme.anand.lingme.Activity.Fragments.HomeFragment;
 import com.lingme.anand.lingme.Activity.Fragments.LoginFragment;
 import com.lingme.anand.lingme.Activity.Fragments.SignUpFragment;
 import com.lingme.anand.lingme.Activity.Fragments.UnderConstructionFragment;
+import com.lingme.anand.lingme.Activity.Pojo.Home;
 import com.lingme.anand.lingme.Activity.Pojo.ListProduct;
 import com.lingme.anand.lingme.R;
+import com.mikepenz.actionitembadge.library.ActionItemBadge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,20 +39,45 @@ public class HomeActivity extends AppCompatActivity {
     private PopupMenu popupMenu;
     FragmentManager fragmentManager;
     Toolbar toolbar;
+    Drawable fav_drawable, bas_drawable ;
     DisplayingFragment fragment;
-    Bundle bundle;
+    Bundle bundle , input;
     FragmentTransaction fragmentTransaction;
+    String fragmentName;
+    int badgecount = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
         db=new DatabaseHelper(getApplicationContext());
+        input = getIntent().getExtras();
         instanciate();
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        HomeFragment fragment = new HomeFragment();
-        fragmentTransaction.replace(R.id.fragments, fragment, SignUpFragment.class.getName());
-        fragmentTransaction.commit();
+        if(input == null) {
+            fragmentManager = getSupportFragmentManager();
+            fragmentTransaction = fragmentManager.beginTransaction();
+            HomeFragment fragment = new HomeFragment();
+            fragmentTransaction.replace(R.id.fragments, fragment, HomeFragment.class.getName());
+            fragmentTransaction.commit();
+        }
+        else {
+            fragmentName = input.getString("fragment");
+            badgecount++;
+            if (fragmentName.equals("LoginFragment")) {
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                LoginFragment fragment = new LoginFragment();
+                fragmentTransaction.replace(R.id.fragments, fragment, LoginFragment.class.getName());
+                getSupportActionBar().setTitle("User Login");
+                fragmentTransaction.commit();
+            } else {
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                HomeFragment fragment = new HomeFragment();
+                fragmentTransaction.replace(R.id.fragments, fragment, HomeFragment.class.getName());
+                fragmentTransaction.commit();
+            }
+        }
+
     }
 
     public void instanciate() {
@@ -59,9 +86,10 @@ public class HomeActivity extends AppCompatActivity {
         bas = (TextView)findViewById(R.id.basket);
         ac = (TextView)findViewById(R.id.ac);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
+        fav_drawable = ContextCompat.getDrawable(getApplicationContext(), R.mipmap.ic_favorite_black_24dp);
+        bas_drawable = ContextCompat.getDrawable(getApplicationContext(), R.mipmap.ic_shop_black_24dp);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-        toolbar.setTitle("Osapasaa");
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -449,8 +477,8 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.action_menu, menu);
-        RelativeLayout badgeLayout = (RelativeLayout) menu.findItem(R.id.fav_menu).getActionView();
-
+        ActionItemBadge.update(this, menu.findItem(R.id.fav_badge), fav_drawable, ActionItemBadge.BadgeStyles.DARK_GREY, badgecount);
+        ActionItemBadge.update(this, menu.findItem(R.id.bas_badge), bas_drawable, ActionItemBadge.BadgeStyles.DARK_GREY, badgecount);
         return super.onCreateOptionsMenu(menu);
     }
 

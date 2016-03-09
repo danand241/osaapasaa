@@ -11,9 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,8 +29,10 @@ import com.android.volley.toolbox.Volley;
 import com.lingme.anand.lingme.Activity.Adapters.DetailsRecyclerAdapter;
 import com.lingme.anand.lingme.Activity.Adapters.NecklaceRecyclerAdapter;
 import com.lingme.anand.lingme.Activity.Fragments.SignUpFragment;
+import com.lingme.anand.lingme.Activity.Pojo.FavList;
 import com.lingme.anand.lingme.Activity.Pojo.ListProduct;
 import com.lingme.anand.lingme.R;
+import com.mikepenz.actionitembadge.library.ActionItemBadge;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -47,14 +54,25 @@ public class DetailsActivity extends AppCompatActivity {
     private ConnectivityManager connectivityManager;
     private NetworkInfo networkInfo;
     private ImageView imageView;
+    Toolbar toolbar;
+    TextView textView;
+    Menu menu;
+    DatabaseHelper db;
+    int badgecount = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            setContentView(R.layout.list_product);
-            recyclerView = (RecyclerView) findViewById(R.id.recycler_list_product);
+            setContentView(R.layout.list_details);
+            db = new DatabaseHelper(getApplicationContext());
+            toolbar = (Toolbar) findViewById(R.id.toolbar_details);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setLogo(R.drawable.logo);
+            recyclerView = (RecyclerView) findViewById(R.id.recycler_list_details);
             Bundle did = getIntent().getExtras();
             id = did.getString("id");
             table = did.getString("table");
@@ -123,7 +141,7 @@ public class DetailsActivity extends AppCompatActivity {
                         h.setTable_name(table);
                         listDetails.add(h);
                     }
-                    detailsRecyclerAdapter = new DetailsRecyclerAdapter(getApplicationContext(), listDetails);
+                    detailsRecyclerAdapter = new DetailsRecyclerAdapter(getApplicationContext(), listDetails, menu);
                     recyclerView.setAdapter(detailsRecyclerAdapter);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -156,5 +174,37 @@ public class DetailsActivity extends AppCompatActivity {
             progressDialog.dismiss();
             progressDialog = null;
         }
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.details_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.fav_menu:
+                ListProduct favList = listDetails.get(0);
+                Boolean isInserted = db.insert(favList.getProductId(), favList.getBrand(), favList.getName(), favList.getPrice(), favList.getDescription(), favList.getStock(), favList.getTable_name(), favList.getImg1());
+                if (isInserted == true)
+                    Toast.makeText(getApplicationContext(), "Added to favourite", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getApplicationContext(), "Not Inserted",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.bas_menu:
+                ListProduct basList = listDetails.get(0);
+                Boolean isInsertedBas = db.insertBas(basList.getProductId(), basList.getBrand(), basList.getName(), basList.getPrice(), basList.getDescription(), basList.getStock(), basList.getTable_name(), basList.getImg1());
+                if (isInsertedBas == true)
+                    Toast.makeText(getApplicationContext(), "Added to Basket", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getApplicationContext(), "Not Inserted",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.buy_menu:
+                Intent in = new Intent(this, HomeActivity.class);
+                in.putExtra("fragment","LoginFragment");
+                startActivity(in);
+        }
+        return false;
     }
 }

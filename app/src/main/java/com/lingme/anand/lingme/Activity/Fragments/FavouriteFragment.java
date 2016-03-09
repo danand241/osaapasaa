@@ -30,6 +30,7 @@ import com.lingme.anand.lingme.Activity.Adapters.NecklaceRecyclerAdapter;
 import com.lingme.anand.lingme.Activity.DatabaseHelper;
 import com.lingme.anand.lingme.Activity.DetailsActivity;
 import com.lingme.anand.lingme.Activity.Listeners.EndlessRecyclerOnScrollListener;
+import com.lingme.anand.lingme.Activity.Pojo.FavList;
 import com.lingme.anand.lingme.Activity.Pojo.ListProduct;
 import com.lingme.anand.lingme.R;
 

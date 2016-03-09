@@ -56,6 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + STOCK + " TEXT,"
                 + TABL_NAME + " TEXT,"
                 + IMAGE + " TEXT" + ")");
+        listProducts = new ArrayList<>();
     }
 
     @Override
@@ -99,24 +100,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<FavList> getProducts(int page) {
         int itemPerPage = 4;
         int offset = (page - 1) * itemPerPage;
+        int i = 0;
         String query = ("SELECT * FROM " + TABLE_NAME_FAV + " LIMIT " + offset + "," + itemPerPage);
 
         SQLiteDatabase db = getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
 
-        FavList product = new FavList();
-
-        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext())
+        {
+                FavList product = new FavList();
                 product.setProductId(cursor.getString(cursor.getColumnIndex(PRODUCT_ID)));
                 product.setBrand(cursor.getString(cursor.getColumnIndex(BRAND)));
                 product.setName(cursor.getString(cursor.getColumnIndex(NAME)));
-                product.setPrice(Integer.parseInt(cursor.getString(cursor.getColumnIndex(PRICE))));
+                product.setPrice(cursor.getInt(cursor.getColumnIndex(PRICE)));
                 product.setDescription(cursor.getString(cursor.getColumnIndex(DESCRIPTION)));
                 product.setStock(cursor.getString(cursor.getColumnIndex(STOCK)));
                 product.setTable_name(cursor.getString(cursor.getColumnIndex(TABL_NAME)));
                 product.setImg1(cursor.getString(cursor.getColumnIndex(IMAGE)));
-            Log.i("error",cursor.getString(cursor.getColumnIndex(PRODUCT_ID))+cursor.getString(cursor.getColumnIndex(IMAGE)));
                 listProducts.add(product);
         }
         return listProducts;
@@ -149,9 +150,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.rawQuery(query, null);
 
-        BasList product = new BasList();
-
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            BasList product = new BasList();
             product.setProductId(cursor.getString(cursor.getColumnIndex(PRODUCT_ID)));
             product.setBrand(cursor.getString(cursor.getColumnIndex(BRAND)));
             product.setName(cursor.getString(cursor.getColumnIndex(NAME)));

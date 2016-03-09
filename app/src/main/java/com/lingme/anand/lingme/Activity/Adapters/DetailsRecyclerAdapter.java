@@ -1,12 +1,18 @@
 package com.lingme.anand.lingme.Activity.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,10 +24,12 @@ import android.widget.Toast;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.lingme.anand.lingme.Activity.DatabaseHelper;
+import com.lingme.anand.lingme.Activity.HomeActivity;
 import com.lingme.anand.lingme.Activity.Listeners.OnItemSelectedListener;
 import com.lingme.anand.lingme.Activity.MySingleton;
 import com.lingme.anand.lingme.Activity.Pojo.ListProduct;
 import com.lingme.anand.lingme.R;
+import com.mikepenz.actionitembadge.library.ActionItemBadge;
 
 import java.util.List;
 
@@ -36,9 +44,12 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
     private ImageLoader mImageLoader;
     private Context context;
     private String checked;
-    public DetailsRecyclerAdapter(Context context, List<ListProduct> list) {
+    Menu menu;
+    DatabaseHelper db;
+    public DetailsRecyclerAdapter(Context context, List<ListProduct> list,Menu menu) {
         this.context = context;
         this.list = list;
+        this.menu = menu;
     }
 
 
@@ -51,7 +62,7 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
 
     @Override
     public void onBindViewHolder(final ListHolderView holder, int position) {
-
+        db = new DatabaseHelper(context);
         final ListProduct details = list.get(position);
         mImageLoader = MySingleton.getInstance(context).getImageLoader();
         holder.networkImageView1.setImageUrl(details.getImg1(), mImageLoader);
@@ -72,7 +83,7 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
         holder.networkImageView3.setImageUrl(details.getImg3(), mImageLoader);
         holder.networkImageView3.setDefaultImageResId(R.drawable.logo);
         Typeface tf = Typeface.createFromAsset(context.getAssets(),
-                "OsaapasaaAmpersand-Regular.ttf");
+                "OsaapasaaText-Regular.ttf");
         holder.name_product.setTypeface(tf);
         holder.product_code.setTypeface(tf);
         holder.price.setTypeface(tf);
@@ -127,29 +138,6 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
         if (holder.xxl.isEnabled()){
             checked = details.getXxl();
         }
-
-        holder.favourite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatabaseHelper db = new DatabaseHelper(context);
-                Boolean isInserted = db.insert(details.getProductId(), details.getBrand(), details.getName(), details.getPrice(), details.getDescription(), details.getStock(), details.getTable_name(), details.getImg1());
-                if (isInserted == true)
-                    Toast.makeText(context, "Added to favourite",Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(context, "Not Inserted",Toast.LENGTH_SHORT).show();
-            }
-        });
-        holder.buy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatabaseHelper db = new DatabaseHelper(context);
-                Boolean isInserted = db.insertBas(details.getProductId(), details.getBrand(), details.getName(), details.getPrice(), details.getDescription(), details.getStock(), details.getTable_name(), details.getImg1());
-                if (isInserted == true)
-                    Toast.makeText(context, "Added to Basket",Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(context, "Not Inserted",Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
@@ -158,11 +146,10 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
     }
 
 
-    public class ListHolderView extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ListHolderView extends RecyclerView.ViewHolder {
         protected NetworkImageView networkImageView1, networkImageView2, networkImageView3;
-        protected TextView name_product, price, brand, stock, description_detail,product_code;
-        protected CheckBox m,l,s,xl,xxl;
-        protected ImageButton buy,viber,favourite;
+        protected TextView name_product, price, brand, stock, description_detail, product_code;
+        protected CheckBox m, l, s, xl, xxl;
 
         public ListHolderView(View itemview) {
             super(itemview);
@@ -179,27 +166,7 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
             this.l = (CheckBox) itemview.findViewById(R.id.l);
             this.xl = (CheckBox) itemview.findViewById(R.id.xl);
             this.xxl = (CheckBox) itemview.findViewById(R.id.xxl);
-            this.buy = (ImageButton) itemview.findViewById(R.id.btn_preview);
             this.product_code = (TextView) itemview.findViewById(R.id.product_code);
-            this.viber = (ImageButton) itemview.findViewById(R.id.viber);
-            this.favourite = (ImageButton) itemview.findViewById(R.id.favourite);
-            viber.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            switch(v.getId()) {
-                case R.id.viber:
-                    Intent smsIntent = new Intent(Intent.ACTION_SENDTO);
-                    smsIntent.addCategory(Intent.CATEGORY_DEFAULT);
-                    smsIntent.setPackage("com.viber.voip");
-                    smsIntent.setData(Uri.parse("sms:+9779860806513"));
-                    smsIntent.putExtra("address", "+9779860806513");
-                    smsIntent.putExtra("sms_body", "body  text");
-                    v.getContext().startActivity(smsIntent);
-                break;
-            }
         }
     }
-
 }

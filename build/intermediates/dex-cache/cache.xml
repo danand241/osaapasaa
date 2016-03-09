@@ -2,11 +2,11 @@
 <items version="2" >
 
     <item
-        jar="F:\Material-Movies\LingMe\app\build\intermediates\exploded-aar\me.leolin\ShortcutBadger\1.1.4\jars\classes.jar"
+        jar="F:\Material-Movies\LingMe\app\build\intermediates\exploded-aar\com.mikepenz\iconics-core\2.5.8\jars\classes.jar"
         jumboMode="false"
         revision="23.0.0 rc3"
-        sha1="b346a5d3fc5d6d1d36c6262c8cc865b76df9f40c">
-        <dex dex="F:\Material-Movies\LingMe\app\build\intermediates\pre-dexed\debug\classes-cc47224e7f7ede055221c6c76a1fcf11a8f90ea5.jar" />
+        sha1="93e12ffa27e468e78d703173853ae71688028628">
+        <dex dex="F:\Material-Movies\LingMe\app\build\intermediates\pre-dexed\debug\classes-771fef8637240ce646de42f2b7fe05fc0cd0f66e.jar" />
     </item>
 
 </items>
