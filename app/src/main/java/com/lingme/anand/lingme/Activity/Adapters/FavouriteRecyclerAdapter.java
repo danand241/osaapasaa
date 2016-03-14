@@ -1,6 +1,7 @@
 package com.lingme.anand.lingme.Activity.Adapters;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.lingme.anand.lingme.Activity.DatabaseHelper;
+import com.lingme.anand.lingme.Activity.HomeActivity;
+import com.lingme.anand.lingme.Activity.Listeners.Delete;
 import com.lingme.anand.lingme.Activity.Listeners.OnItemSelectedListener;
 import com.lingme.anand.lingme.Activity.MySingleton;
 import com.lingme.anand.lingme.Activity.Pojo.FavList;
@@ -32,10 +35,12 @@ public class FavouriteRecyclerAdapter extends RecyclerView.Adapter<FavouriteRecy
     private ArrayList<FavList> list;
     private ImageLoader mImageLoader;
     private Context context;
+    private Delete delete;
 
-    public FavouriteRecyclerAdapter(Context context, ArrayList<FavList> list) {
+    public FavouriteRecyclerAdapter(Context context, ArrayList<FavList> list,Delete delete) {
         this.context = context;
         this.list = list;
+        this.delete = delete;
         notifyDataSetChanged();
     }
 
@@ -48,7 +53,7 @@ public class FavouriteRecyclerAdapter extends RecyclerView.Adapter<FavouriteRecy
     }
 
     @Override
-    public void onBindViewHolder(HolderView holder, int position) {
+    public void onBindViewHolder(HolderView holder, final int position) {
         final FavList details = list.get(position);
         Log.i("asdf", list.get(position).toString() + "");
         holder.getLayoutPosition();
@@ -77,9 +82,20 @@ public class FavouriteRecyclerAdapter extends RecyclerView.Adapter<FavouriteRecy
                 Boolean isInserted = db.insertBas(details.getProductId(), details.getBrand(), details.getName(), details.getPrice(), details.getDescription(), details.getStock(), details.getTable_name(), details.getImg1());
                 if (isInserted == true) {
                     Toast.makeText(context, "Added to Basket", Toast.LENGTH_SHORT).show();
-                }
-                else
+                } else
                     Toast.makeText(context, "Not Inserted", Toast.LENGTH_SHORT).show();
+            }
+        });
+        holder.remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseHelper db = new DatabaseHelper(context);
+                SQLiteDatabase del = db.getWritableDatabase();
+                del.delete("favourite","product_id=?",new String[]{details.getProductId()});
+                list.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, list.size());
+                delete.delete();
             }
         });
     }
@@ -95,11 +111,11 @@ public class FavouriteRecyclerAdapter extends RecyclerView.Adapter<FavouriteRecy
     }
 
 
-    public class HolderView extends RecyclerView.ViewHolder {
-
+    public class HolderView extends RecyclerView.ViewHolder
+    {
         protected NetworkImageView networkImageView;
         protected TextView name_product, fav_price, brand, stock, description_detail, product_code;
-        protected ImageButton buy;
+        protected ImageButton buy,remove;
 
         public HolderView(View itemView) {
             super(itemView);
@@ -110,6 +126,7 @@ public class FavouriteRecyclerAdapter extends RecyclerView.Adapter<FavouriteRecy
             this.stock = (TextView) itemView.findViewById(R.id.fav_stock);
             this.description_detail = (TextView) itemView.findViewById(R.id.fav_description);
             this.buy = (ImageButton) itemView.findViewById(R.id.fav_list);
+            this.remove = (ImageButton)itemView.findViewById(R.id.remove_fav);
         }
     }
 }

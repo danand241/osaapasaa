@@ -1,6 +1,7 @@
 package com.lingme.anand.lingme.Activity.Fragments;
 
 import android.app.ProgressDialog;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -76,7 +78,7 @@ public class HomeFragment extends Fragment implements OnItemSelectedListener,OnI
     private FragmentManager fragmentManager;
     private NetworkImageView offer,sale;
     private ImageLoader mImageLoader;
-
+    private TextView new_in_store, popular, offer_home, sale_home;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -100,7 +102,16 @@ public class HomeFragment extends Fragment implements OnItemSelectedListener,OnI
             final LinearLayoutManager layoutManager2 = new LinearLayoutManager(getActivity());
             layoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
             mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-
+            new_in_store = (TextView) view.findViewById(R.id.new_in_store);
+            popular = (TextView) view.findViewById(R.id.popular_textview);
+            offer_home = (TextView) view.findViewById(R.id.offer_textview);
+            sale_home = (TextView) view.findViewById(R.id.sale_textview);
+            Typeface tf = Typeface.createFromAsset(getActivity().getAssets(),
+                    "OsaapasaaText-Regular.ttf");
+            new_in_store.setTypeface(tf);
+            popular.setTypeface(tf);
+            offer_home.setTypeface(tf);
+            sale_home.setTypeface(tf);
             recyclerView1.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager1) {
                 @Override
                 public void onLoadMore(int current_page) {

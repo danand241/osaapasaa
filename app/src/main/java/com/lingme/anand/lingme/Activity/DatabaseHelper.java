@@ -166,4 +166,52 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return listProductsbas;
     }
 
+    public ArrayList<BasList> getAllProducts() {
+
+        String query = ("SELECT * FROM "+TABLE_NAME_BAS);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            BasList product = new BasList();
+            product.setProductId(cursor.getString(cursor.getColumnIndex(PRODUCT_ID)));
+            product.setBrand(cursor.getString(cursor.getColumnIndex(BRAND)));
+            product.setName(cursor.getString(cursor.getColumnIndex(NAME)));
+            product.setPrice(Integer.parseInt(cursor.getString(cursor.getColumnIndex(PRICE))));
+            product.setDescription(cursor.getString(cursor.getColumnIndex(DESCRIPTION)));
+            product.setStock(cursor.getString(cursor.getColumnIndex(STOCK)));
+            product.setTable_name(cursor.getString(cursor.getColumnIndex(TABL_NAME)));
+            product.setImg1(cursor.getString(cursor.getColumnIndex(IMAGE)));
+            Log.i("error",cursor.getString(cursor.getColumnIndex(PRODUCT_ID))+cursor.getString(cursor.getColumnIndex(IMAGE)));
+            listProductsbas.add(product);
+        }
+        return listProductsbas;
+    }
+
+    public ArrayList<FavList> getAllProductsFav() {
+
+        String query = ("SELECT * FROM "+TABLE_NAME_FAV);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            FavList product = new FavList();
+            product.setProductId(cursor.getString(cursor.getColumnIndex(PRODUCT_ID)));
+            product.setBrand(cursor.getString(cursor.getColumnIndex(BRAND)));
+            product.setName(cursor.getString(cursor.getColumnIndex(NAME)));
+            product.setPrice(Integer.parseInt(cursor.getString(cursor.getColumnIndex(PRICE))));
+            product.setDescription(cursor.getString(cursor.getColumnIndex(DESCRIPTION)));
+            product.setStock(cursor.getString(cursor.getColumnIndex(STOCK)));
+            product.setTable_name(cursor.getString(cursor.getColumnIndex(TABL_NAME)));
+            product.setImg1(cursor.getString(cursor.getColumnIndex(IMAGE)));
+            Log.i("error",cursor.getString(cursor.getColumnIndex(PRODUCT_ID))+cursor.getString(cursor.getColumnIndex(IMAGE)));
+            listProducts.add(product);
+        }
+        return listProducts;
+    }
+
 }

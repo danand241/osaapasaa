@@ -1,5 +1,6 @@
 package com.lingme.anand.lingme.Activity;
 
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +23,8 @@ import com.lingme.anand.lingme.Activity.Fragments.HomeFragment;
 import com.lingme.anand.lingme.Activity.Fragments.LoginFragment;
 import com.lingme.anand.lingme.Activity.Fragments.SignUpFragment;
 import com.lingme.anand.lingme.Activity.Fragments.UnderConstructionFragment;
+import com.lingme.anand.lingme.Activity.Listeners.Delete;
+import com.lingme.anand.lingme.Activity.Listeners.Select;
 import com.lingme.anand.lingme.Activity.Pojo.Home;
 import com.lingme.anand.lingme.Activity.Pojo.ListProduct;
 import com.lingme.anand.lingme.R;
@@ -33,35 +36,37 @@ import java.util.List;
 /**
  * Created by nepal on 20/10/2015.
  */
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity{
     TextView menu, fav, bas, ac;
     DatabaseHelper db;
     private PopupMenu popupMenu;
     FragmentManager fragmentManager;
     Toolbar toolbar;
-    Drawable fav_drawable, bas_drawable ;
+    Drawable fav_drawable, bas_drawable;
     DisplayingFragment fragment;
-    Bundle bundle , input;
+    Bundle bundle, input;
     FragmentTransaction fragmentTransaction;
     String fragmentName;
-    int badgecount = 1;
+    int bas_badge = 0;
+    int fav_badge = 0;
+    Menu menu_item = null;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
-        db=new DatabaseHelper(getApplicationContext());
+        db = new DatabaseHelper(getApplicationContext());
         input = getIntent().getExtras();
         instanciate();
-        if(input == null) {
+        if (input == null) {
             fragmentManager = getSupportFragmentManager();
             fragmentTransaction = fragmentManager.beginTransaction();
             HomeFragment fragment = new HomeFragment();
             fragmentTransaction.replace(R.id.fragments, fragment, HomeFragment.class.getName());
             fragmentTransaction.commit();
-        }
-        else {
+        } else {
             fragmentName = input.getString("fragment");
-            badgecount++;
+
             if (fragmentName.equals("LoginFragment")) {
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
@@ -69,11 +74,14 @@ public class HomeActivity extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.fragments, fragment, LoginFragment.class.getName());
                 getSupportActionBar().setTitle("User Login");
                 fragmentTransaction.commit();
-            } else {
+            }
+            else
+            {
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
-                HomeFragment fragment = new HomeFragment();
-                fragmentTransaction.replace(R.id.fragments, fragment, HomeFragment.class.getName());
+                SignUpFragment fragment = new SignUpFragment();
+                fragmentTransaction.replace(R.id.fragments, fragment, SignUpFragment.class.getName());
+                getSupportActionBar().setTitle("Account Details");
                 fragmentTransaction.commit();
             }
         }
@@ -81,11 +89,17 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void instanciate() {
-        menu = (TextView)findViewById(R.id.menu);
-        fav = (TextView)findViewById(R.id.fav);
-        bas = (TextView)findViewById(R.id.basket);
-        ac = (TextView)findViewById(R.id.ac);
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Typeface tf = Typeface.createFromAsset(this.getAssets(),
+                "OsaapasaaAmpersand-Regular.ttf");
+        menu = (TextView) findViewById(R.id.menu);
+        fav = (TextView) findViewById(R.id.fav);
+        bas = (TextView) findViewById(R.id.basket);
+        ac = (TextView) findViewById(R.id.ac);
+        menu.setTypeface(tf);
+        fav.setTypeface(tf);
+        bas.setTypeface(tf);
+        ac.setTypeface(tf);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         fav_drawable = ContextCompat.getDrawable(getApplicationContext(), R.mipmap.ic_favorite_black_24dp);
         bas_drawable = ContextCompat.getDrawable(getApplicationContext(), R.mipmap.ic_shop_black_24dp);
         setSupportActionBar(toolbar);
@@ -122,20 +136,21 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
         fav.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        FavouriteFragment fragment = new FavouriteFragment();
-        fragmentTransaction.replace(R.id.fragments, fragment, FavouriteFragment.class.getName());
-        fragmentTransaction.addToBackStack(getSupportActionBar().getTitle().toString());
-        getSupportActionBar().setTitle("Favourites");
-        fragmentTransaction.commit();
-        ac.setSelected(false);
-        bas.setSelected(false);
-        fav.setSelected(true);
-        menu.setSelected(false);
-    }});
+            @Override
+            public void onClick(View v) {
+                fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                FavouriteFragment fragment = new FavouriteFragment();
+                fragmentTransaction.replace(R.id.fragments, fragment, FavouriteFragment.class.getName());
+                fragmentTransaction.addToBackStack(getSupportActionBar().getTitle().toString());
+                getSupportActionBar().setTitle("Favourites");
+                fragmentTransaction.commit();
+                ac.setSelected(false);
+                bas.setSelected(false);
+                fav.setSelected(true);
+                menu.setSelected(false);
+            }
+        });
         bas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,6 +168,8 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     private class OnDismissListener implements PopupMenu.OnDismissListener {
 
@@ -477,10 +494,18 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.action_menu, menu);
-        ActionItemBadge.update(this, menu.findItem(R.id.fav_badge), fav_drawable, ActionItemBadge.BadgeStyles.DARK_GREY, badgecount);
-        ActionItemBadge.update(this, menu.findItem(R.id.bas_badge), bas_drawable, ActionItemBadge.BadgeStyles.DARK_GREY, badgecount);
-        return super.onCreateOptionsMenu(menu);
+        ActionItemBadge.update(this, menu.findItem(R.id.fav_badge), fav_drawable, ActionItemBadge.BadgeStyles.DARK_GREY, fav_badge);
+        ActionItemBadge.update(this, menu.findItem(R.id.bas_badge), bas_drawable, ActionItemBadge.BadgeStyles.DARK_GREY, bas_badge);
+        menu_item = menu;
+        return true;
     }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        ActionItemBadge.update(this, menu.findItem(R.id.bas_badge), bas_drawable, ActionItemBadge.BadgeStyles.DARK_GREY, bas_badge++);
+        return true;
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -488,7 +513,7 @@ public class HomeActivity extends AppCompatActivity {
             finish();
         } else {
             getSupportFragmentManager().popBackStack();
-            getSupportActionBar().setTitle( fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName());
+            getSupportActionBar().setTitle(fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName());
         }
     }
 }

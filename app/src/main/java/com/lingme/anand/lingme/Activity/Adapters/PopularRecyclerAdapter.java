@@ -1,6 +1,7 @@
 package com.lingme.anand.lingme.Activity.Adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,9 +44,12 @@ public class PopularRecyclerAdapter extends RecyclerView.Adapter<PopularRecycler
     public void onBindViewHolder(ListHolderView holder, int position) {
         HomePopular details = list.get(position);
         mImageLoader = MySingleton.getInstance(context).getImageLoader();
+        Typeface tf = Typeface.createFromAsset(context.getAssets(),
+                "OsaapasaaText-Regular.ttf");
         holder.networkImageView.setImageUrl(details.getImage_path(), mImageLoader);
         holder.networkImageView.setDefaultImageResId(R.drawable.logo);
-        holder.name_price_popular.setText(details.getName()+" "+details.getPrice());
+        holder.name_price_popular.setText(details.getName()+"\n"+"Rs."+details.getPrice());
+        holder.name_price_popular.setTypeface(tf);
 
     }
     public void clearAdapter() {

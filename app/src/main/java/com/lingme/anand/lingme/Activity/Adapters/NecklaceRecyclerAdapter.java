@@ -1,6 +1,7 @@
 package com.lingme.anand.lingme.Activity.Adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,10 +46,13 @@ public class NecklaceRecyclerAdapter extends RecyclerView.Adapter<NecklaceRecycl
     public void onBindViewHolder(HolderView holder, int position) {
         ListProduct details = list.get(position);
         holder.getLayoutPosition();
+        Typeface tf = Typeface.createFromAsset(context.getAssets(),
+                "OsaapasaaText-Regular.ttf");
         mImageLoader = MySingleton.getInstance(context).getImageLoader();
         holder.networkImageView.setImageUrl(details.getImg1(), mImageLoader);
         holder.networkImageView.setDefaultImageResId(R.drawable.logo);
-        holder.name_price.setText(details.getName()+" "+details.getPrice());
+        holder.name_price.setText(details.getName()+"\n"+"Rs."+details.getPrice());
+        holder.name_price.setTypeface(tf);
 
 
     }

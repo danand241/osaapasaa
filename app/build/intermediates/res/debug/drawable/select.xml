@@ -2,17 +2,17 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape>
-            <gradient android:endColor="#10000000" android:startColor="#10000000" />
+            <gradient android:endColor="#FFFFFF" android:startColor="#FFFFFF" />
         </shape>
     </item>
     <item android:state_selected="true" >
         <shape>
-            <gradient android:endColor="#50000000" android:startColor="#50000000" />
+            <gradient android:endColor="#FFFFFF" android:startColor="#FFFFFF" />
         </shape>
     </item>
     <item android:state_pressed="false">
         <shape>
-            <gradient android:endColor="#90000000" android:startColor="#90000000" />
+            <gradient android:endColor="#10000000" android:startColor="#10000000" />
         </shape>
     </item>
 </selector><!-- From: file:/F:/Material-Movies/LingMe/app/src/main/res/drawable/select.xml -->

@@ -33,7 +33,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@android:color/white"
                 android:textSize="10dp"
-
+                android:lines="2"
                 />
 
 

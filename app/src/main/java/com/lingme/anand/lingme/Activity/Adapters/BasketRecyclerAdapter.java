@@ -2,6 +2,7 @@ package com.lingme.anand.lingme.Activity.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.lingme.anand.lingme.Activity.DatabaseHelper;
+import com.lingme.anand.lingme.Activity.Listeners.Delete;
 import com.lingme.anand.lingme.Activity.MySingleton;
 import com.lingme.anand.lingme.Activity.Pojo.BasList;
 import com.lingme.anand.lingme.Activity.Pojo.ListProduct;
@@ -26,14 +29,15 @@ import mehdi.sakout.fancybuttons.FancyButton;
 /**
  * Created by nepal on 23/02/2016.
  */
-public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAdapter.HolderView> {
+public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAdapter.HolderView>{
     private ArrayList<BasList> list;
     private ImageLoader mImageLoader;
     private Context context;
-
-    public BasketRecyclerAdapter(Context context, ArrayList<BasList> list) {
+    private Delete delete;
+    public BasketRecyclerAdapter(Context context, ArrayList<BasList> list,Delete delete) {
         this.context = context;
         this.list = list;
+        this.delete = delete;
         notifyDataSetChanged();
     }
 
@@ -46,8 +50,8 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
     }
 
     @Override
-    public void onBindViewHolder(HolderView holder, int position) {
-        BasList details = list.get(position);
+    public void onBindViewHolder(HolderView holder, final int position) {
+        final BasList details = list.get(position);
         holder.getLayoutPosition();
         mImageLoader = MySingleton.getInstance(context).getImageLoader();
         holder.networkImageView.setImageUrl(details.getImg1(), mImageLoader);
@@ -69,13 +73,13 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
         holder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent smsIntent = new Intent(Intent.ACTION_SENDTO);
-                smsIntent.addCategory(Intent.CATEGORY_DEFAULT);
-                smsIntent.setPackage("com.viber.voip");
-                smsIntent.setData(Uri.parse("sms:+9779860806513"));
-                smsIntent.putExtra("address", "+9779860806513");
-                smsIntent.putExtra("sms_body", "body  text");
-                v.getContext().startActivity(smsIntent);
+                DatabaseHelper db = new DatabaseHelper(context);
+                SQLiteDatabase del = db.getWritableDatabase();
+                del.delete("basket", "product_id=?", new String[]{details.getProductId()});
+                list.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, list.size());
+                delete.delete();
             }
         });
     }
@@ -89,6 +93,7 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
     public int getItemCount() {
         return list.size();
     }
+
 
 
     public class HolderView extends RecyclerView.ViewHolder {

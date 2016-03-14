@@ -190,8 +190,7 @@ public class DetailsActivity extends AppCompatActivity {
                 if (isInserted == true)
                     Toast.makeText(getApplicationContext(), "Added to favourite", Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(getApplicationContext(), "Not Inserted",Toast.LENGTH_SHORT).show();
-                break;
+                    Toast.makeText(getApplicationContext(), "Not Inserted",Toast.LENGTH_SHORT).show();                break;
             case R.id.bas_menu:
                 ListProduct basList = listDetails.get(0);
                 Boolean isInsertedBas = db.insertBas(basList.getProductId(), basList.getBrand(), basList.getName(), basList.getPrice(), basList.getDescription(), basList.getStock(), basList.getTable_name(), basList.getImg1());
@@ -201,9 +200,15 @@ public class DetailsActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Not Inserted",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.buy_menu:
-                Intent in = new Intent(this, HomeActivity.class);
-                in.putExtra("fragment","LoginFragment");
-                startActivity(in);
+                UserLocalStore userLocalStore = new UserLocalStore(this);
+                if(userLocalStore.getUserLogIn() == true) {
+                    Intent in = new Intent(this, HomeActivity.class);
+                    in.putExtra("fragment", "SignUpFragment");
+                    startActivity(in);
+                } else {
+                    Intent in = new Intent(this, HomeActivity.class);
+                    startActivity(in);
+                }
         }
         return false;
     }
