@@ -32,6 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String STOCK = "stock";
     public static final String TABL_NAME = "table_name";
     public static final String IMAGE = "image";
+    public static final String SIZE = "size";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -41,19 +42,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL("CREATE TABLE " + TABLE_NAME_FAV + "("
+                +"id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + PRODUCT_ID + " TEXT," + BRAND
                 + " TEXT,"
                 + NAME + " TEXT," + PRICE + " INTEGER ,"
                 + DESCRIPTION + " TEXT,"
                 + STOCK + " TEXT,"
+                + SIZE + " TEXT,"
                 + TABL_NAME + " TEXT,"
                 + IMAGE + " TEXT" + ")");
         db.execSQL("CREATE TABLE " + TABLE_NAME_BAS + "("
+                +"id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + PRODUCT_ID + " TEXT," + BRAND
                 + " TEXT,"
                 + NAME + " TEXT," + PRICE + " INTEGER ,"
                 + DESCRIPTION + " TEXT,"
                 + STOCK + " TEXT,"
+                + SIZE + " TEXT,"
                 + TABL_NAME + " TEXT,"
                 + IMAGE + " TEXT" + ")");
         listProducts = new ArrayList<>();
@@ -67,34 +72,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insert(String product_id, String brand, String name, int price, String description, String stock, String table_name, String image) {
-        String sql = "INSERT INTO " + TABLE_NAME_FAV + " VALUES (?,?,?,?,?,?,?,?);";
+    public boolean insert(String product_id, String brand, String name, int price, String description, String stock, String table_name, String image, String size) {
         SQLiteDatabase db = this.getWritableDatabase();
-        SQLiteStatement statement = db.compileStatement(sql);
-        statement.bindString(1, product_id);
-        statement.bindString(2, brand);
-        statement.bindString(3, name);
-        statement.bindString(4, price + "");
-        statement.bindString(5, description);
-        statement.bindString(6, stock);
-        statement.bindString(7, table_name);
-        statement.bindString(8, image);
-       /* ContentValues contentValues = new ContentValues();
-        contentValues.put("product_id", product_id);
-        contentValues.put("brand", brand);
-        contentValues.put("name", name);
-        contentValues.put("price", price);
-        contentValues.put("description", description);
-        contentValues.put("stock", stock);
-        contentValues.put("table_name", table_name);
-        contentValues.put("image", image);*/
-        statement.execute();
-       /* long result = db.insert(TABLE_NAME_FAV, null, contentValues);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("id", (byte[]) null);
+        contentValues.put(PRODUCT_ID, product_id);
+        contentValues.put(BRAND, brand);
+        contentValues.put(NAME, name);
+        contentValues.put(PRICE, price);
+        contentValues.put(DESCRIPTION, description);
+        contentValues.put(STOCK, stock);
+        contentValues.put(SIZE, size);
+        contentValues.put(TABL_NAME, table_name);
+        contentValues.put(IMAGE, image);
+
+        long result = db.insert(TABLE_NAME_FAV, null, contentValues);
         if (result == -1)
             return false;
         else
-            return true;*/
-        return true;
+            return true;
+
     }
 
     public ArrayList<FavList> getProducts(int page) {
@@ -110,6 +107,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext())
         {
                 FavList product = new FavList();
+                product.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 product.setProductId(cursor.getString(cursor.getColumnIndex(PRODUCT_ID)));
                 product.setBrand(cursor.getString(cursor.getColumnIndex(BRAND)));
                 product.setName(cursor.getString(cursor.getColumnIndex(NAME)));
@@ -118,22 +116,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 product.setStock(cursor.getString(cursor.getColumnIndex(STOCK)));
                 product.setTable_name(cursor.getString(cursor.getColumnIndex(TABL_NAME)));
                 product.setImg1(cursor.getString(cursor.getColumnIndex(IMAGE)));
+                product.setSize(cursor.getString(cursor.getColumnIndex(SIZE)));
                 listProducts.add(product);
         }
         return listProducts;
     }
 
-    public boolean insertBas(String product_id, String brand, String name, int price, String description, String stock, String table_name, String image) {
+    public boolean insertBas(String product_id, String brand, String name, int price, String description, String stock, String table_name, String image, String size) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put("id", (byte[]) null);
         contentValues.put("product_id", product_id);
         contentValues.put("brand", brand);
         contentValues.put("name", name);
         contentValues.put("price", price);
         contentValues.put("description", description);
         contentValues.put("stock", stock);
+        contentValues.put("size", size);
         contentValues.put("table_name", table_name);
         contentValues.put("image", image);
+
         long result = db.insert(TABLE_NAME_BAS, null, contentValues);
         if (result == -1)
             return false;
@@ -152,6 +154,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
             BasList product = new BasList();
+            product.setId(cursor.getInt(cursor.getColumnIndex("id")));
             product.setProductId(cursor.getString(cursor.getColumnIndex(PRODUCT_ID)));
             product.setBrand(cursor.getString(cursor.getColumnIndex(BRAND)));
             product.setName(cursor.getString(cursor.getColumnIndex(NAME)));
@@ -160,6 +163,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             product.setStock(cursor.getString(cursor.getColumnIndex(STOCK)));
             product.setTable_name(cursor.getString(cursor.getColumnIndex(TABL_NAME)));
             product.setImg1(cursor.getString(cursor.getColumnIndex(IMAGE)));
+            product.setSize(cursor.getString(cursor.getColumnIndex(SIZE)));
             Log.i("error",cursor.getString(cursor.getColumnIndex(PRODUCT_ID))+cursor.getString(cursor.getColumnIndex(IMAGE)));
             listProductsbas.add(product);
         }
@@ -176,6 +180,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
             BasList product = new BasList();
+            product.setId(cursor.getInt(cursor.getColumnIndex("id")));
             product.setProductId(cursor.getString(cursor.getColumnIndex(PRODUCT_ID)));
             product.setBrand(cursor.getString(cursor.getColumnIndex(BRAND)));
             product.setName(cursor.getString(cursor.getColumnIndex(NAME)));
@@ -200,6 +205,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
             FavList product = new FavList();
+            product.setId(cursor.getInt(cursor.getColumnIndex("id")));
             product.setProductId(cursor.getString(cursor.getColumnIndex(PRODUCT_ID)));
             product.setBrand(cursor.getString(cursor.getColumnIndex(BRAND)));
             product.setName(cursor.getString(cursor.getColumnIndex(NAME)));

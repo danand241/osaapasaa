@@ -60,7 +60,6 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
         holder.brand.setText("Brand: " + details.getBrand());
         holder.stock.setText("Stock: " + details.getStock());
         holder.fav_price.setText("Rs. " + details.getPrice() + "");
-        holder.description_detail.setText(details.getDescription());
         Typeface tf = Typeface.createFromAsset(context.getAssets(),
                 "OsaapasaaText-Regular.ttf");
         holder.name_product.setTypeface(tf);
@@ -69,13 +68,21 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
         holder.fav_price.setTypeface(tf1);
         holder.brand.setTypeface(tf);
         holder.stock.setTypeface(tf);
-        holder.description_detail.setTypeface(tf);
+        holder.size.setTypeface(tf);
+        if(details.getSize().isEmpty() == true)
+        {
+            holder.size.setVisibility(View.GONE);
+        }
+        else {
+            holder.size.setText("Size: "+details.getSize());
+            holder.size.setTypeface(tf);
+        }
         holder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatabaseHelper db = new DatabaseHelper(context);
                 SQLiteDatabase del = db.getWritableDatabase();
-                del.delete("basket", "product_id=?", new String[]{details.getProductId()});
+                del.delete("basket", "id=?", new String[]{String.valueOf(details.getId())});
                 list.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, list.size());
@@ -99,7 +106,7 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
     public class HolderView extends RecyclerView.ViewHolder {
 
         protected NetworkImageView networkImageView;
-        protected TextView name_product, fav_price, brand, stock, description_detail, product_code;
+        protected TextView name_product, fav_price, brand, stock, size;
         protected ImageButton remove;
 
         public HolderView(View itemView) {
@@ -109,8 +116,8 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
             this.fav_price = (TextView) itemView.findViewById(R.id.price_bas);
             this.brand = (TextView) itemView.findViewById(R.id.bas_brand);
             this.stock = (TextView) itemView.findViewById(R.id.bas_stock);
-            this.description_detail = (TextView) itemView.findViewById(R.id.bas_description);
             this.remove = (ImageButton) itemView.findViewById(R.id.bas_list);
+            this.size = (TextView) itemView.findViewById(R.id.bas_size);
         }
     }
 }

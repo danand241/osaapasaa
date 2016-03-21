@@ -3,6 +3,7 @@ package com.lingme.anand.lingme.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Base64;
 
 import com.lingme.anand.lingme.Activity.Pojo.User;
 
@@ -20,6 +21,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 /**
@@ -27,9 +29,10 @@ import java.util.ArrayList;
  */
 public class ServerRequest {
     ProgressDialog progressDialog;
+    private byte[] password = null;
+    private String base64;
     private static final String REQUEST_URL = "http://wwwgyaampe.com/osaapasaa/user_authenticate.php";
     private static final int CONNECTION_TIMEOUT = 1000 * 15;
-
     public ServerRequest(Context context)
     {
         progressDialog = new ProgressDialog(context);
@@ -59,8 +62,20 @@ public class ServerRequest {
         @Override
         protected User doInBackground(Void... params) {
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
+            try {
+                password = user.getPassword().getBytes("UTF-8");
+            } catch (UnsupportedEncodingException e1) {
+                e1.printStackTrace();
+            }
+            base64 = Base64.encodeToString(password, Base64.NO_WRAP);
+            try {
+                password = base64.getBytes("UTF-8");
+            } catch (UnsupportedEncodingException e1) {
+                e1.printStackTrace();
+            }
+            base64 = Base64.encodeToString(password, Base64.NO_WRAP);
             dataToSend.add(new BasicNameValuePair("username", user.getUsername()));
-            dataToSend.add(new BasicNameValuePair("password", user.getPassword()));
+            dataToSend.add(new BasicNameValuePair("password", base64));
 
             HttpParams httpParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT);

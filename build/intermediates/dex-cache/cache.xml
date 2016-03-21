@@ -2,11 +2,11 @@
 <items version="2" >
 
     <item
-        jar="F:\Material-Movies\LingMe\app\build\intermediates\exploded-aar\com.mikepenz\iconics-core\2.5.8\jars\classes.jar"
+        jar="F:\Material-Movies\LingMe\app\build\intermediates\exploded-aar\com.github.traex.rippleeffect\library\1.3\jars\classes.jar"
         jumboMode="false"
         revision="23.0.0 rc3"
-        sha1="93e12ffa27e468e78d703173853ae71688028628">
-        <dex dex="F:\Material-Movies\LingMe\app\build\intermediates\pre-dexed\debug\classes-771fef8637240ce646de42f2b7fe05fc0cd0f66e.jar" />
+        sha1="ee17feb34ce104bc17d1a1e64346d7f779ebb066">
+        <dex dex="F:\Material-Movies\LingMe\app\build\intermediates\pre-dexed\debug\classes-c2aad792fb908f5e3f88e1f0e1fc1b53ea66957a.jar" />
     </item>
 
 </items>

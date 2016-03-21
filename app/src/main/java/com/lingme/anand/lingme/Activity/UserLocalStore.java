@@ -12,7 +12,6 @@ public class UserLocalStore
 {
     public static final String SP_NAME = "userDetails";
     SharedPreferences userLocalStore;
-
     public UserLocalStore(Context context)
     {
         userLocalStore = context.getSharedPreferences(SP_NAME, 0);
@@ -37,8 +36,8 @@ public class UserLocalStore
         user.setUsername(userLocalStore.getString("username", ""));
         user.setPassword(userLocalStore.getString("password", ""));
         user.setAddress(userLocalStore.getString("address", ""));
-        user.setEmail(userLocalStore.getString("email",""));
-        user.setPhoneNumber(userLocalStore.getLong("phoneNumber",0));
+        user.setEmail(userLocalStore.getString("email", ""));
+        user.setPhoneNumber(userLocalStore.getLong("phoneNumber", 0));
         return user;
     }
 
@@ -63,4 +62,5 @@ public class UserLocalStore
         editor.clear();
         editor.commit();
     }
+
 }

@@ -8,8 +8,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/refresh"
         android:src="@drawable/download"
-        android:layout_marginBottom="204dp"
-        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -19,6 +18,6 @@
         android:id="@+id/con_msg"
         android:layout_above="@+id/refresh"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="35dp"
+        android:layout_centerVertical="true"
         android:textSize="20dp"/>
 </RelativeLayout><!-- From: file:/F:/Material-Movies/LingMe/app/src/main/res/layout/fragment_connection.xml -->

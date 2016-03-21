@@ -32,8 +32,8 @@ public final class R {
 	}
 	public static final class id {
 		public static final int iconics_tag_id = 0x7f0d0005;
-		public static final int menu_badge = 0x7f0d00e9;
-		public static final int menu_badge_icon = 0x7f0d00e8;
+		public static final int menu_badge = 0x7f0d00eb;
+		public static final int menu_badge_icon = 0x7f0d00ea;
 	}
 	public static final class layout {
 		public static final int menu_badge = 0x7f04002d;

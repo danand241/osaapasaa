@@ -18,14 +18,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.lingme.anand.lingme.Activity.AppLocalStore;
 import com.lingme.anand.lingme.Activity.DatabaseHelper;
+import com.lingme.anand.lingme.Activity.DetailsActivity;
 import com.lingme.anand.lingme.Activity.HomeActivity;
 import com.lingme.anand.lingme.Activity.Listeners.OnItemSelectedListener;
+import com.lingme.anand.lingme.Activity.Listeners.Select;
+import com.lingme.anand.lingme.Activity.Listeners.SelectSize;
 import com.lingme.anand.lingme.Activity.MySingleton;
 import com.lingme.anand.lingme.Activity.Pojo.ListProduct;
 import com.lingme.anand.lingme.R;
@@ -39,17 +44,16 @@ import mehdi.sakout.fancybuttons.FancyButton;
  * Created by nepal on 6/11/2015.
  */
 public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecyclerAdapter.ListHolderView> {
-    int x=1,y=2,z=0;
+
     private List<ListProduct> list;
     private ImageLoader mImageLoader;
     private Context context;
-    private String checked;
-    Menu menu;
+    String checked;
     DatabaseHelper db;
-    public DetailsRecyclerAdapter(Context context, List<ListProduct> list,Menu menu) {
+    public DetailsRecyclerAdapter(Context context, List<ListProduct> list) {
         this.context = context;
         this.list = list;
-        this.menu = menu;
+
     }
 
 
@@ -70,7 +74,7 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
         holder.name_product.setText("Name: " + details.getName().toString());
         holder.price.setText("Price: Rs."+details.getPrice() + "");
         holder.brand.setText("Brand: "+details.getBrand());
-        holder.stock.setText("Stock: "+details.getStock());
+        holder.stock.setText("Stock: " + details.getStock());
         holder.description_detail.setText(details.getDescription());
         holder.m.setText(details.getM());
         holder.s.setText(details.getS());
@@ -94,50 +98,104 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
         holder.l.setTypeface(tf);
         holder.xxl.setTypeface(tf);
         holder.xl.setTypeface(tf);
+        holder.description.setText("Description:");
+        holder.description.setTypeface(tf);
+        holder.size.setText("Size:");
+        holder.size.setTypeface(tf);
         holder.networkImageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (x == y) {
-                    holder.networkImageView1.setImageUrl(details.getImg1(), mImageLoader);
-                    holder.networkImageView2.setImageUrl(details.getImg2(), mImageLoader);
-                    y = z;
-                } else {
-                    holder.networkImageView1.setImageUrl(details.getImg2(), mImageLoader);
-                    holder.networkImageView2.setImageUrl(details.getImg1(), mImageLoader);
-                    y = x;
-                }
+                holder.networkImageView1.setImageUrl(details.getImg3(),mImageLoader);
+                holder.networkImageView2.setImageUrl(details.getImg1(),mImageLoader);
             }
         });
         holder.networkImageView3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (x == y) {
-                    holder.networkImageView1.setImageUrl(details.getImg1(), mImageLoader);
-                    holder.networkImageView3.setImageUrl(details.getImg3(), mImageLoader);
-                    y = z;
-                } else {
-                    holder.networkImageView1.setImageUrl(details.getImg3(), mImageLoader);
-                    holder.networkImageView3.setImageUrl(details.getImg1(), mImageLoader);
-                    y = x;
-                }
+                holder.networkImageView1.setImageUrl(details.getImg2(),mImageLoader);
+                holder.networkImageView3.setImageUrl(details.getImg1(),mImageLoader);
             }
         });
-        if (holder.l.isEnabled()){
-          checked = details.getL();
+        if(details.getL().isEmpty() == true && details.getM().isEmpty() == true && details.getS().isEmpty() == true && details.getXl().isEmpty() == true && details.getXxl().isEmpty() == true){
+            holder.l.setVisibility(View.GONE);
+            holder.m.setVisibility(View.GONE);
+            holder.s.setVisibility(View.GONE);
+            holder.xl.setVisibility(View.GONE);
+            holder.xxl.setVisibility(View.GONE);
+            holder.size.setVisibility(View.GONE);
+            holder.view.setVisibility(View.GONE);
+            DetailsActivity.size = "";
         }
-        if (holder.m.isEnabled()){
-            checked = details.getM();
+        if(details.getL().isEmpty() == true)
+        {
+            holder.l.setVisibility(View.GONE);
         }
-        if (holder.s.isEnabled()){
-            checked = details.getS();
+        if(details.getS().isEmpty() == true)
+        {
+            holder.s.setVisibility(View.GONE);
         }
-        if (holder.xl.isEnabled()){
-            checked = details.getXl();
+        if(details.getM().isEmpty() == true)
+        {
+            holder.m.setVisibility(View.GONE);
         }
-        if (holder.xxl.isEnabled()){
-            checked = details.getXxl();
+        if(details.getXl().isEmpty() == true)
+        {
+            holder.xl.setVisibility(View.GONE);
         }
+        if(details.getXxl().isEmpty() == true)
+        {
+            holder.xxl.setVisibility(View.GONE);
+        }
+        holder.l.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    checked = details.getL();
+                    DetailsActivity.size = checked;
+                }
+
+            }
+        });
+        holder.m.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    checked = details.getM();
+                    DetailsActivity.size = checked;
+                }
+
+            }
+        });
+        holder.s.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    checked = details.getS();
+                    DetailsActivity.size = checked;
+                }
+
+            }
+        });
+        holder.xl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    checked = details.getXl();
+                    DetailsActivity.size = checked;
+                }
+
+            }
+        });
+        holder.xxl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    checked = details.getXxl();
+                    DetailsActivity.size = checked;
+                }
+
+            }
+        });
     }
 
     @Override
@@ -148,9 +206,9 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
 
     public class ListHolderView extends RecyclerView.ViewHolder {
         protected NetworkImageView networkImageView1, networkImageView2, networkImageView3;
-        protected TextView name_product, price, brand, stock, description_detail, product_code;
+        protected TextView name_product, price, brand, stock, description_detail, product_code, size , description;
         protected CheckBox m, l, s, xl, xxl;
-
+        protected View view;
         public ListHolderView(View itemview) {
             super(itemview);
             this.networkImageView1 = (NetworkImageView) itemview.findViewById(R.id.details_image);
@@ -167,6 +225,9 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
             this.xl = (CheckBox) itemview.findViewById(R.id.xl);
             this.xxl = (CheckBox) itemview.findViewById(R.id.xxl);
             this.product_code = (TextView) itemview.findViewById(R.id.product_code);
+            this.size = (TextView) itemview.findViewById(R.id.size);
+            this.view = (View) itemview.findViewById(R.id.line3);
+            this.description = (TextView) itemview.findViewById(R.id.description);
         }
     }
 }

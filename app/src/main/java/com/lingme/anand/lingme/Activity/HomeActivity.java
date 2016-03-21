@@ -47,8 +47,8 @@ public class HomeActivity extends AppCompatActivity{
     Bundle bundle, input;
     FragmentTransaction fragmentTransaction;
     String fragmentName;
-    int bas_badge = 0;
-    int fav_badge = 0;
+    public static int bas_badge = 0;
+    public static int fav_badge = 0;
     Menu menu_item = null;
 
     @Override
@@ -56,6 +56,7 @@ public class HomeActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
         db = new DatabaseHelper(getApplicationContext());
+        UserLocalStore userLocalStore = new UserLocalStore(this);
         input = getIntent().getExtras();
         instanciate();
         if (input == null) {
@@ -122,13 +123,24 @@ public class HomeActivity extends AppCompatActivity{
         ac.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                LoginFragment fragment = new LoginFragment();
-                fragmentTransaction.replace(R.id.fragments, fragment, LoginFragment.class.getName());
-                fragmentTransaction.addToBackStack(getSupportActionBar().getTitle().toString());
-                getSupportActionBar().setTitle("Account");
-                fragmentTransaction.commit();
+                    UserLocalStore userLocalStore = new UserLocalStore(getApplicationContext());
+                if(userLocalStore.getUserLogIn() == true){
+                    fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    SignUpFragment fragment = new SignUpFragment();
+                    fragmentTransaction.replace(R.id.fragments, fragment, SignUpFragment.class.getName());
+                    fragmentTransaction.addToBackStack(getSupportActionBar().getTitle().toString());
+                    getSupportActionBar().setTitle("Account Details");
+                    fragmentTransaction.commit();
+                }else {
+                    fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    LoginFragment fragment = new LoginFragment();
+                    fragmentTransaction.replace(R.id.fragments, fragment, LoginFragment.class.getName());
+                    fragmentTransaction.addToBackStack(getSupportActionBar().getTitle().toString());
+                    getSupportActionBar().setTitle("User Login");
+                    fragmentTransaction.commit();
+                }
                 ac.setSelected(true);
                 bas.setSelected(false);
                 fav.setSelected(false);
@@ -149,6 +161,8 @@ public class HomeActivity extends AppCompatActivity{
                 bas.setSelected(false);
                 fav.setSelected(true);
                 menu.setSelected(false);
+                fav_badge = 0;
+                getSupportActionBar().invalidateOptionsMenu();
             }
         });
         bas.setOnClickListener(new View.OnClickListener() {
@@ -165,6 +179,8 @@ public class HomeActivity extends AppCompatActivity{
                 fav.setSelected(false);
                 ac.setSelected(false);
                 menu.setSelected(false);
+                bas_badge = 0;
+                getSupportActionBar().invalidateOptionsMenu();
             }
         });
     }
@@ -494,18 +510,49 @@ public class HomeActivity extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.action_menu, menu);
-        ActionItemBadge.update(this, menu.findItem(R.id.fav_badge), fav_drawable, ActionItemBadge.BadgeStyles.DARK_GREY, fav_badge);
-        ActionItemBadge.update(this, menu.findItem(R.id.bas_badge), bas_drawable, ActionItemBadge.BadgeStyles.DARK_GREY, bas_badge);
-        menu_item = menu;
-        return true;
+        UserLocalStore userLocalStore = new UserLocalStore(this);
+            ActionItemBadge.update(this, menu.findItem(R.id.fav_badge), fav_drawable, ActionItemBadge.BadgeStyles.DARK_GREY, fav_badge);
+            ActionItemBadge.update(this, menu.findItem(R.id.bas_badge), bas_drawable, ActionItemBadge.BadgeStyles.DARK_GREY, bas_badge);
+
+            return true;
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        ActionItemBadge.update(this, menu.findItem(R.id.bas_badge), bas_drawable, ActionItemBadge.BadgeStyles.DARK_GREY, bas_badge++);
-        return true;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.fav_badge:
+                fav_badge = 0;
+                ActionItemBadge.update(item, fav_badge);
+                fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                FavouriteFragment fragment = new FavouriteFragment();
+                fragmentTransaction.replace(R.id.fragments, fragment, FavouriteFragment.class.getName());
+                fragmentTransaction.addToBackStack(getSupportActionBar().getTitle().toString());
+                getSupportActionBar().setTitle("Favourites");
+                fragmentTransaction.commit();
+                ac.setSelected(false);
+                bas.setSelected(false);
+                fav.setSelected(true);
+                menu.setSelected(false);
+                break;
+            case R.id.bas_badge:
+                bas_badge = 0;
+                ActionItemBadge.update(item, bas_badge);
+                fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransactionBas = fragmentManager.beginTransaction();
+                BasketFragment fragmentBas = new BasketFragment();
+                fragmentTransactionBas.replace(R.id.fragments, fragmentBas, BasketFragment.class.getName());
+                fragmentTransactionBas.addToBackStack(getSupportActionBar().getTitle().toString());
+                getSupportActionBar().setTitle("Basket");
+                fragmentTransactionBas.commit();
+                ac.setSelected(false);
+                bas.setSelected(true);
+                fav.setSelected(false);
+                menu.setSelected(false);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public void onBackPressed() {

@@ -4,6 +4,25 @@ package com.lingme.anand.lingme.Activity.Pojo;
  * Created by nepal on 4/03/2016.
  */
 public class FavList {
+    private int id;
+    private String size;
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     private String name;
     private String productId;
     private int price;

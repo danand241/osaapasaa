@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -158,14 +159,17 @@ public class HomeFragment extends Fragment implements OnItemSelectedListener,OnI
 
                     JSONArray home = response.getJSONArray("home");
 
-                    for (int i = 0; i < home.length(); i++) {
 
-                        JSONObject post = home.getJSONObject(i);
 
-                        Home h = new Home();
-                        String img = post.getString("new");
-                        h.setNewThumbnail("http://wwwgyaampe.com/img/home" + img);
-                        listDetails.add(h);
+                        for (int i = 0; i < home.length(); i++) {
+
+                            JSONObject post = home.getJSONObject(i);
+
+                            Home h = new Home();
+                            String img = post.getString("new");
+                            h.setNewThumbnail("http://wwwgyaampe.com/img/home" + img);
+                            listDetails.add(h);
+
                     }
 
                     adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager(), listDetails);
@@ -181,7 +185,23 @@ public class HomeFragment extends Fragment implements OnItemSelectedListener,OnI
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                hidePD();
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                        getActivity());
+
+                // Setting Dialog Title
+                alertDialog.setTitle("FAILED");
+
+                // Setting Dialog Message
+                alertDialog.setMessage("Oops something went wrong");
+
+                // Setting Icon to Dialog
+                alertDialog.setIcon(R.drawable.logo);
+
+                // Setting OK Button
+                alertDialog.setPositiveButton("OK", null);
+
+                // Showing Alert Message
+                alertDialog.show();
             }
         });
 

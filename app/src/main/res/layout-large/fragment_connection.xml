@@ -16,7 +16,7 @@
         android:text="Internet Connection Problem"
         android:id="@+id/con_msg"
         android:textSize="20dp"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="300dp" />
+        android:layout_above="@+id/refresh"/>
 </RelativeLayout>

@@ -1,27 +1,34 @@
 package com.lingme.anand.lingme.Activity.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.devspark.robototextview.util.RobotoTextViewUtils;
+import com.devspark.robototextview.util.RobotoTypefaceManager;
 import com.lingme.anand.lingme.Activity.DatabaseHelper;
 import com.lingme.anand.lingme.Activity.HomeActivity;
 import com.lingme.anand.lingme.Activity.Listeners.Delete;
 import com.lingme.anand.lingme.Activity.Listeners.OnItemSelectedListener;
 import com.lingme.anand.lingme.Activity.MySingleton;
 import com.lingme.anand.lingme.Activity.Pojo.FavList;
+import com.lingme.anand.lingme.Activity.Pojo.Home;
 import com.lingme.anand.lingme.Activity.Pojo.ListProduct;
 import com.lingme.anand.lingme.R;
+import com.neno0o.lighttextviewlib.LightTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +62,6 @@ public class FavouriteRecyclerAdapter extends RecyclerView.Adapter<FavouriteRecy
     @Override
     public void onBindViewHolder(HolderView holder, final int position) {
         final FavList details = list.get(position);
-        Log.i("asdf", list.get(position).toString() + "");
         holder.getLayoutPosition();
         mImageLoader = MySingleton.getInstance(context).getImageLoader();
         holder.networkImageView.setImageUrl(details.getImg1(), mImageLoader);
@@ -64,7 +70,6 @@ public class FavouriteRecyclerAdapter extends RecyclerView.Adapter<FavouriteRecy
         holder.brand.setText("Brand: " + details.getBrand());
         holder.stock.setText("Stock: " + details.getStock());
         holder.fav_price.setText("Rs. " + details.getPrice() + "");
-        holder.description_detail.setText(details.getDescription());
         Typeface tf = Typeface.createFromAsset(context.getAssets(),
                 "OsaapasaaText-Regular.ttf");
         holder.name_product.setTypeface(tf);
@@ -73,15 +78,23 @@ public class FavouriteRecyclerAdapter extends RecyclerView.Adapter<FavouriteRecy
         holder.fav_price.setTypeface(tf1);
         holder.brand.setTypeface(tf);
         holder.stock.setTypeface(tf);
-        holder.description_detail.setTypeface(tf);
-        Log.i("msssg", details.getImg1());
+        if(details.getSize().isEmpty() == true)
+        {
+            holder.size.setVisibility(View.GONE);
+        }
+        else {
+            holder.size.setText("Size: "+details.getSize());
+            holder.size.setTypeface(tf);
+        }
         holder.buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatabaseHelper db = new DatabaseHelper(context);
-                Boolean isInserted = db.insertBas(details.getProductId(), details.getBrand(), details.getName(), details.getPrice(), details.getDescription(), details.getStock(), details.getTable_name(), details.getImg1());
+                Boolean isInserted = db.insertBas(details.getProductId(), details.getBrand(), details.getName(), details.getPrice(), details.getDescription(), details.getStock(), details.getTable_name(), details.getImg1(),details.getSize());
                 if (isInserted == true) {
                     Toast.makeText(context, "Added to Basket", Toast.LENGTH_SHORT).show();
+                    ((AppCompatActivity) context).getSupportActionBar().invalidateOptionsMenu();
+                    HomeActivity.bas_badge++;
                 } else
                     Toast.makeText(context, "Not Inserted", Toast.LENGTH_SHORT).show();
             }
@@ -91,7 +104,7 @@ public class FavouriteRecyclerAdapter extends RecyclerView.Adapter<FavouriteRecy
             public void onClick(View v) {
                 DatabaseHelper db = new DatabaseHelper(context);
                 SQLiteDatabase del = db.getWritableDatabase();
-                del.delete("favourite","product_id=?",new String[]{details.getProductId()});
+                del.delete("favourite", "id=?", new String[]{String.valueOf(details.getId())});
                 list.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, list.size());
@@ -114,9 +127,8 @@ public class FavouriteRecyclerAdapter extends RecyclerView.Adapter<FavouriteRecy
     public class HolderView extends RecyclerView.ViewHolder
     {
         protected NetworkImageView networkImageView;
-        protected TextView name_product, fav_price, brand, stock, description_detail, product_code;
-        protected ImageButton buy,remove;
-
+        protected TextView name_product, fav_price, brand, stock, size;
+        protected ImageView buy,remove;
         public HolderView(View itemView) {
             super(itemView);
             this.networkImageView = (NetworkImageView) itemView.findViewById(R.id.fav_image);
@@ -124,9 +136,10 @@ public class FavouriteRecyclerAdapter extends RecyclerView.Adapter<FavouriteRecy
             this.fav_price = (TextView) itemView.findViewById(R.id.price_fav);
             this.brand = (TextView) itemView.findViewById(R.id.fav_brand);
             this.stock = (TextView) itemView.findViewById(R.id.fav_stock);
-            this.description_detail = (TextView) itemView.findViewById(R.id.fav_description);
-            this.buy = (ImageButton) itemView.findViewById(R.id.fav_list);
-            this.remove = (ImageButton)itemView.findViewById(R.id.remove_fav);
+            this.buy = (ImageView) itemView.findViewById(R.id.fav_list);
+            this.remove = (ImageView)itemView.findViewById(R.id.remove_fav);
+            this.size = (TextView) itemView.findViewById(R.id.fav_size);
         }
     }
+
 }

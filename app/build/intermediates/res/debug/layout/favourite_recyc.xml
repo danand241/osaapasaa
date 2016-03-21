@@ -24,11 +24,11 @@
 
                 <com.android.volley.toolbox.NetworkImageView
                     android:id="@+id/fav_image"
-                    android:layout_width="150dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY" />
-            </RelativeLayout>
 
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/price_fav"
@@ -53,10 +53,20 @@
                 />
 
             <TextView
-                android:id="@+id/fav_brand"
+                android:id="@+id/fav_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/fav_name"
+                android:layout_margin="5dp"
+                android:layout_toRightOf="@+id/rl1"
+                android:text="New Text"
+                android:textColor="#000000"/>
+
+            <TextView
+                android:id="@+id/fav_brand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fav_size"
                 android:layout_margin="5dp"
                 android:layout_toRightOf="@+id/rl1"
                 android:text="New Text"
@@ -72,35 +82,28 @@
                 android:text="New Text"
                 android:textColor="#000000"/>
 
-            <TextView
-                android:id="@+id/fav_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/fav_stock"
-                android:layout_margin="5dp"
-                android:layout_toRightOf="@+id/rl1"
-                android:text="New Text"
-                android:textColor="#000000"/>
-
-            <ImageButton
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/ic_shop_black_24dp"
-                android:background="#FFFFFF"
+                android:background="@drawable/fav_bas_select"
                 android:id="@+id/fav_list"
+                android:padding="10dp"
                 android:layout_toRightOf="@id/rl1"
                 android:layout_alignParentBottom="true"
                 android:layout_marginLeft="5dp"/>
 
-            <ImageButton
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/ic_delete_black_24dp"
-                android:background="#FFFFFF"
+                android:background="@drawable/fav_bas_select"
                 android:layout_toRightOf="@+id/fav_list"
                 android:layout_alignParentBottom="true"
                 android:layout_marginLeft="5dp"
+                android:padding="10dp"
                 android:id="@+id/remove_fav"/>
+
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 

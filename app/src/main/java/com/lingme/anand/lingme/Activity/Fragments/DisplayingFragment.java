@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -139,7 +140,23 @@ public class DisplayingFragment extends Fragment implements OnItemSelectedListen
             @Override
             public void onErrorResponse(VolleyError error) {
                 //  VolleyLog.d(TAG, "Error" + error.getMessage());
-                hidePD();
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                        getActivity());
+
+                // Setting Dialog Title
+                alertDialog.setTitle("FAILED");
+
+                // Setting Dialog Message
+                alertDialog.setMessage("Oops something went wrong");
+
+                // Setting Icon to Dialog
+                alertDialog.setIcon(R.drawable.logo);
+
+                // Setting OK Button
+                alertDialog.setPositiveButton("OK", null);
+
+                // Showing Alert Message
+                alertDialog.show();
             }
         });
 
@@ -202,6 +219,23 @@ public class DisplayingFragment extends Fragment implements OnItemSelectedListen
             @Override
             public void onErrorResponse(VolleyError error) {
                 hidePD();
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                        getActivity());
+
+                // Setting Dialog Title
+                alertDialog.setTitle("FAILED");
+
+                // Setting Dialog Message
+                alertDialog.setMessage("Oops something went wrong");
+
+                // Setting Icon to Dialog
+                alertDialog.setIcon(R.drawable.logo);
+
+                // Setting OK Button
+                alertDialog.setPositiveButton("OK", null);
+
+                // Showing Alert Message
+                alertDialog.show();;
             }
         });
         queue.add(jsonObjectRequest);

@@ -4,10 +4,21 @@ package com.lingme.anand.lingme.Activity.Pojo;
  * Created by nepal on 4/03/2016.
  */
 public class BasList {
+    private String size;
+    private int id;
     private String name;
     private String productId;
     private int price;
     private String img1;
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
     private String img2;
     private String img3;
     private String stock;
@@ -138,5 +149,13 @@ public class BasList {
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
