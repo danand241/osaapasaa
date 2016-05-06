@@ -1,6 +1,7 @@
 package com.lingme.anand.lingme.Activity.Fragments;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -29,6 +31,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.lingme.anand.lingme.Activity.DetailsActivity;
 import com.lingme.anand.lingme.Activity.HomeActivity;
 import com.lingme.anand.lingme.Activity.Pojo.ListProduct;
 import com.lingme.anand.lingme.Activity.Pojo.User;
@@ -54,10 +57,10 @@ import mehdi.sakout.fancybuttons.FancyButton;
  * Created by nepal on 29/10/2015.
  */
 public class SignUpFragment extends Fragment {
-    EditText username_input,password_input,name,address,phoneNumber,email;
+    EditText username_input,password_input,name,address,phoneNumber,email,password_confirm;
     FancyButton submit, logout;
-    String inserUrl= "http://wwwgyaampe.com/osaapasaa/insert.php";
-    String wholeUrl = "http://wwwgyaampe.com/osaapasaa/login.php";
+    String inserUrl= "http://www.osaapasaa.com.np/insert.php";
+    String wholeUrl = "http://www.osaapasaa.com.np/login.php";
     RequestQueue requestQueue ,getRequestQueue;
     ProgressDialog progressDialog;
     private ConnectivityManager connectivityManager;
@@ -67,6 +70,8 @@ public class SignUpFragment extends Fragment {
     FragmentTransaction fragmentTransaction;
     private byte[] password = null;
     private String base64;
+    CheckBox checkBox;
+    boolean aBoolean = false;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,23 +83,30 @@ public class SignUpFragment extends Fragment {
             requestQueue = Volley.newRequestQueue(getActivity());
             username_input = (EditText) view.findViewById(R.id.username_input);
             password_input = (EditText) view.findViewById(R.id.password_input);
+            password_confirm = (EditText) view.findViewById(R.id.confirm_password);
             phoneNumber = (EditText) view.findViewById(R.id.contact_input);
             name = (EditText) view.findViewById(R.id.name_input);
             address = (EditText) view.findViewById(R.id.address_input);
             email = (EditText) view.findViewById(R.id.email_input);
-            username_input.setHint("Username");
-            password_input.setHint("Password");
-            phoneNumber.setHint("Phone Number");
-            name.setHint("Name");
-            address.setHint("Address");
-            email.setHint("Email");
+            checkBox = (CheckBox) view.findViewById(R.id.terms_conditions);
             submit = (FancyButton) view.findViewById(R.id.submit);
             logout = (FancyButton) view.findViewById(R.id.logout);
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (((CheckBox) v).isChecked()) {
+                        aBoolean = true;
+                    }
+                }
+            });
             check();
             submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (TextUtils.isEmpty(username_input.getText().toString())) {
+                    if(aBoolean == false){
+                        checkBox.requestFocus();
+                        checkBox.setError("please accept terms and conditions");
+                    } else if (TextUtils.isEmpty(username_input.getText().toString())) {
                         username_input.requestFocus();
                         username_input.setError("Username cannot be empty");
                     } else if (TextUtils.isEmpty(password_input.getText().toString())) {
@@ -108,31 +120,70 @@ public class SignUpFragment extends Fragment {
                     } else if (TextUtils.isEmpty(email.getText().toString())) {
                         email.requestFocus();
                         email.setError("Email cannot be empty");
-
-                    } else if (TextUtils.isEmpty(phoneNumber.getText().toString())) {
-                        phoneNumber.requestFocus();
-                        phoneNumber.setError("Phone Number cannot be empty");
-
-                    } else if (TextUtils.isEmpty(name.getText().toString())) {
-                        name.requestFocus();
-                        name.setError("Phone Number cannot be empty");
-
-                    } else if (password_input.getText().length() < 7) {
+                    }else if (!password_input.getText().toString().equals(password_confirm.getText().toString())) {
                         password_input.requestFocus();
-                        password_input.setError("Password must be 7 characters long");
-                    } else if(isValidPhoneNumber(phoneNumber.getText().toString()) == false){
-                        phoneNumber.requestFocus();
-                        phoneNumber.setError("Mobile number is not valid");
+                        password_input.setError("Password didn't match");
+                        password_confirm.setText("");
+                    }
+                    else if(isValidPassword(password_input.getText().toString().trim()) == false){
+                        password_input.requestFocus();
+                        password_input.setError("Password must contain [a-zA-Z0-9!@#$%^&*~+=]");
                     }
                     else if(isValidEmail(email.getText().toString()) == false){
                         email.requestFocus();
                         email.setError("email is not valid");
                     }
-                    else if (isValidPassword(password_input.getText().toString()) == false) {
-                        password_input.requestFocus();
-                        password_input.setError("Password can only contain [a-zA-Z0-9~!@#$%^&*]");
-                    }else {
-                          checkRedundancy();
+                    else if(isValidPhoneNumber(phoneNumber.getText().toString()) == false){
+                        phoneNumber.requestFocus();
+                        phoneNumber.setError("Mobile Number is not valid");
+                    }else{
+                        showPd();
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, wholeUrl, null, new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                hidePD();
+                                try {
+                                    if (response.getString("message").equals("No data found")) {
+                                        sendToServer();
+                                        Log.i("message","message");
+                                    } else {
+                                        JSONArray results = response.getJSONArray("home");
+                                        Log.i("nomsg","nomsg");
+                                        for (int i = 0; i < results.length(); i++) {
+
+                                            JSONObject post = results.getJSONObject(i);
+                                            if(post.getString("username").equals(username_input.getText().toString())) {
+                                                username_input.requestFocus();
+                                                username_input.setError("Username already used");
+                                                Log.i("username",post.getString("username"));
+                                                break;
+                                            } else if(post.getString("phoneNumber").equals(phoneNumber.getText()+"")) {
+                                                phoneNumber.requestFocus();
+                                                phoneNumber.setError("Phone Number already used");
+                                                break;
+                                            } else if(post.getString("email").equals(email.getText()+"")) {
+                                                email.requestFocus();
+                                                email.setError("email already used");
+                                                break;
+                                            } else {
+                                                sendToServer();
+                                                break;
+                                            }
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                //  VolleyLog.d(TAG, "Error" + error.getMessage());
+                                hidePD();
+                            }
+
+                        });
+                        requestQueue.add(jsonObjectRequest);
                         }
                     }
             });
@@ -177,26 +228,6 @@ public class SignUpFragment extends Fragment {
             @Override
             public void onResponse(String s) {
                 try {
-                    Log.i("string", s);
-                    if(!(s.length() == 0)) {
-                        JSONObject jsonObject = new JSONObject(s);
-                        UserLocalStore userLocalStore = new UserLocalStore(getActivity());
-                        User loggedUser = new User();
-                        loggedUser = userLocalStore.getLoggedUser();
-                        loggedUser.setUsername(jsonObject.getString("username"));
-                        loggedUser.setPassword(jsonObject.getString("password"));
-                        loggedUser.setName(jsonObject.getString("name"));
-                        loggedUser.setAddress(jsonObject.getString("address"));
-                        loggedUser.setPhoneNumber(Long.parseLong(jsonObject.getString("phoneNumber")));
-                        loggedUser.setEmail(jsonObject.getString("email"));
-                        userLocalStore.storeUserLocalData(loggedUser);
-                        userLocalStore.setUserLogIn(true);
-                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        HomeFragment fragment = new HomeFragment();
-                        fragmentTransaction.replace(R.id.fragments, fragment, HomeFragment.class.getName());
-                        fragmentTransaction.commit();
-
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                                 getActivity());
 
@@ -210,11 +241,30 @@ public class SignUpFragment extends Fragment {
                         alertDialog.setIcon(R.drawable.logo);
 
                         // Setting OK Button
-                        alertDialog.setPositiveButton("OK", null);
-
+                        alertDialog.setPositiveButton("OK",  new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                UserLocalStore userLocalStore = new UserLocalStore(getActivity());
+                                User loggedUser = new User();
+                                loggedUser = userLocalStore.getLoggedUser();
+                                loggedUser.setUsername(username_input.getText().toString());
+                                loggedUser.setPassword(password_input.getText().toString());
+                                loggedUser.setName(name.getText().toString());
+                                loggedUser.setAddress(address.getText().toString());
+                                loggedUser.setPhoneNumber(Long.parseLong(phoneNumber.getText().toString()));
+                                loggedUser.setEmail(email.getText().toString());
+                                userLocalStore.storeUserLocalData(loggedUser);
+                                userLocalStore.setUserLogIn(true);
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                HomeFragment fragment = new HomeFragment();
+                                fragmentTransaction.replace(R.id.fragments, fragment, HomeFragment.class.getName());
+                                fragmentTransaction.commit();
+                            }
+                        });
                         // Showing Alert Message
                         alertDialog.show();
-                    }
+
                 }catch (Exception e){
 
                 }
@@ -279,9 +329,13 @@ public class SignUpFragment extends Fragment {
             name.setText(loggedUser.getName());
             logout.setVisibility(View.VISIBLE);
             submit.setVisibility(View.GONE);
+            checkBox.setVisibility(View.GONE);
+            password_confirm.setVisibility(View.GONE);
         }else {
             logout.setVisibility(View.GONE);
             submit.setVisibility(View.VISIBLE);
+            checkBox.setText("Terms and Conditions");
+            checkBox.setVisibility(View.VISIBLE);
         }
     }
 
@@ -315,7 +369,7 @@ public class SignUpFragment extends Fragment {
         Pattern pattern;
         Matcher matcher;
 
-        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=])(?=\\S+$).{4,}$";
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!~*@#$%^&+=])(?=\\S+$).{4,}$";
 
         pattern = Pattern.compile(PASSWORD_PATTERN);
         matcher = pattern.matcher(password);
@@ -354,55 +408,4 @@ public class SignUpFragment extends Fragment {
         return isValidEmail;
     }
 
-    public void checkRedundancy()
-    {
-        showPd();
-
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, wholeUrl, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                hidePD();
-                try {
-                    if (response.getString("message").equals("No data found")) {
-                        sendToServer();
-                        Log.i("message","message");
-                    } else {
-                        JSONArray results = response.getJSONArray("home");
-
-                        for (int i = 0; i < results.length(); i++) {
-
-                            JSONObject post = results.getJSONObject(i);
-                            if (post.getString("username").equals(username_input.getText().toString())) {
-                                username_input.requestFocus();
-                                username_input.setError("Username already used");
-                                break;
-                            } else if (post.getString("phoneNumber").equals(phoneNumber.getText().toString())) {
-                                phoneNumber.requestFocus();
-                                phoneNumber.setError("Phone Number already used");
-                                break;
-                            } else if (post.getString("email").equals(email.getText().toString().trim())) {
-                                email.requestFocus();
-                                email.setError("email already used");
-                                break;
-                            } else {
-                                sendToServer();
-                                break;
-                            }
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //  VolleyLog.d(TAG, "Error" + error.getMessage());
-                hidePD();
-            }
-
-        });
-        requestQueue.add(jsonObjectRequest);
-    }
 }

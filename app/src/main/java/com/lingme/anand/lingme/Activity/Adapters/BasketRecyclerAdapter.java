@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.lingme.anand.lingme.Activity.DatabaseHelper;
+import com.lingme.anand.lingme.Activity.HomeActivity;
 import com.lingme.anand.lingme.Activity.Listeners.Delete;
 import com.lingme.anand.lingme.Activity.MySingleton;
 import com.lingme.anand.lingme.Activity.Pojo.BasList;
@@ -86,6 +88,8 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
                 list.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, list.size());
+                ((AppCompatActivity) context).getSupportActionBar().invalidateOptionsMenu();
+                HomeActivity.bas_badge--;
                 delete.delete();
             }
         });

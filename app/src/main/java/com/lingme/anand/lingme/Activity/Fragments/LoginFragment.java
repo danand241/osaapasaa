@@ -70,9 +70,7 @@ public class LoginFragment extends Fragment {
             user = new User();
             coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
             login_user_input = (EditText) view.findViewById(R.id.login_username_input);
-            login_user_input.setHint("Username");
             login_password_input = (EditText) view.findViewById(R.id.login_password_input);
-            login_password_input.setHint("Password");
             login = (FancyButton) view.findViewById(R.id.login);
             userLocalStore = new UserLocalStore(getActivity());
             login.setOnClickListener(new View.OnClickListener() {
@@ -103,8 +101,8 @@ public class LoginFragment extends Fragment {
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     SignUpFragment fragment = new SignUpFragment();
                     fragmentTransaction.replace(R.id.fragments, fragment, SignUpFragment.class.getName());
-                    fragmentTransaction.addToBackStack(((AppCompatActivity) getActivity()).getSupportActionBar().getTitle().toString());
-                    ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("User Registration");
+                  /*  fragmentTransaction.addToBackStack(((AppCompatActivity) getActivity()).getSupportActionBar().getTitle().toString());
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("User Registration");*/
                     fragmentTransaction.commit();
                 }
             });

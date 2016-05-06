@@ -1,6 +1,7 @@
 package com.lingme.anand.lingme.Activity.Fragments;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -37,6 +38,7 @@ import com.lingme.anand.lingme.Activity.Adapters.OfferRecyclerAdapter;
 import com.lingme.anand.lingme.Activity.Adapters.PopularRecyclerAdapter;
 import com.lingme.anand.lingme.Activity.Adapters.SaleRecyclerAdapter;
 import com.lingme.anand.lingme.Activity.Adapters.ViewPagerAdapter;
+import com.lingme.anand.lingme.Activity.DetailsActivity;
 import com.lingme.anand.lingme.Activity.Listeners.EndlessRecyclerOnScrollListener;
 import com.lingme.anand.lingme.Activity.Listeners.OnItemSelect;
 import com.lingme.anand.lingme.Activity.Listeners.OnItemSelectedListener;
@@ -60,7 +62,7 @@ import me.relex.circleindicator.CircleIndicator;
 /**
  * Created by nepal on 29/10/2015.
  */
-public class HomeFragment extends Fragment implements OnItemSelectedListener,OnItemSelect,Select{
+public class HomeFragment extends Fragment implements OnItemSelect {
     private ConnectivityManager connectivityManager;
     private NetworkInfo networkInfo;
     private AutoScrollViewPager viewPager;
@@ -77,9 +79,10 @@ public class HomeFragment extends Fragment implements OnItemSelectedListener,OnI
     private SaleRecyclerAdapter saleRecyclerAdapter;
     private ImageView imageView;
     private FragmentManager fragmentManager;
-    private NetworkImageView offer,sale;
+    private NetworkImageView offer, sale;
     private ImageLoader mImageLoader;
     private TextView new_in_store, popular, offer_home, sale_home;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,8 +92,8 @@ public class HomeFragment extends Fragment implements OnItemSelectedListener,OnI
         if (networkInfo != null && networkInfo.isConnected()) {
             view = inflater.inflate(R.layout.fragment_home, container, false);
             mImageLoader = MySingleton.getInstance(getActivity().getApplicationContext()).getImageLoader();
-            offer = (NetworkImageView)view.findViewById(R.id.offer);
-            sale = (NetworkImageView)view.findViewById(R.id.sale);
+            offer = (NetworkImageView) view.findViewById(R.id.offer);
+            sale = (NetworkImageView) view.findViewById(R.id.sale);
             viewPager = (AutoScrollViewPager) view.findViewById(R.id.new_pager);
             viewPager.setInterval(5000);
             viewPager.startAutoScroll();
@@ -145,7 +148,7 @@ public class HomeFragment extends Fragment implements OnItemSelectedListener,OnI
 
     public void updateList() {
 
-        String url = "http://wwwgyaampe.com/osaapasaa/home_info.php";
+        String url = "http://www.osaapasaa.com.np/home_info.php";
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         showPd();
 
@@ -160,15 +163,14 @@ public class HomeFragment extends Fragment implements OnItemSelectedListener,OnI
                     JSONArray home = response.getJSONArray("home");
 
 
+                    for (int i = 0; i < home.length(); i++) {
 
-                        for (int i = 0; i < home.length(); i++) {
+                        JSONObject post = home.getJSONObject(i);
 
-                            JSONObject post = home.getJSONObject(i);
-
-                            Home h = new Home();
-                            String img = post.getString("new");
-                            h.setNewThumbnail("http://wwwgyaampe.com/img/home" + img);
-                            listDetails.add(h);
+                        Home h = new Home();
+                        String img = post.getString("new");
+                        h.setNewThumbnail("http://www.osaapasaa.com.np/img/home" + img);
+                        listDetails.add(h);
 
                     }
 
@@ -185,23 +187,7 @@ public class HomeFragment extends Fragment implements OnItemSelectedListener,OnI
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                        getActivity());
-
-                // Setting Dialog Title
-                alertDialog.setTitle("FAILED");
-
-                // Setting Dialog Message
-                alertDialog.setMessage("Oops something went wrong");
-
-                // Setting Icon to Dialog
-                alertDialog.setIcon(R.drawable.logo);
-
-                // Setting OK Button
-                alertDialog.setPositiveButton("OK", null);
-
-                // Showing Alert Message
-                alertDialog.show();
+                hidePD();
             }
         });
 
@@ -222,10 +208,11 @@ public class HomeFragment extends Fragment implements OnItemSelectedListener,OnI
 
     public void detailsPopular() {
 
-        String url = "http://wwwgyaampe.com/osaapasaa/list.php?table=popular&page=1";
+        String url = "http://www.osaapasaa.com.np/list.php?table=popular";
         detailsRecyclerAdapter = new PopularRecyclerAdapter(getActivity(), homePopulars, this);
         recyclerView1.setAdapter(detailsRecyclerAdapter);
         RequestQueue queue = Volley.newRequestQueue(getActivity());
+        detailsRecyclerAdapter.clearAdapter();
         showPd();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -243,8 +230,9 @@ public class HomeFragment extends Fragment implements OnItemSelectedListener,OnI
 
                         HomePopular h = new HomePopular();
                         String img = post.getString("img1");
-                        h.setImage_path("http://wwwgyaampe.com/img/popular" + img);
+                        h.setImage_path("http://www.osaapasaa.com.np/img/popular" + img);
                         h.setName(post.getString("name"));
+                        h.setProduct_id(post.getString("product_id"));
                         h.setPrice(Integer.parseInt(post.getString("price")));
                         homePopulars.add(h);
                     }
@@ -267,7 +255,7 @@ public class HomeFragment extends Fragment implements OnItemSelectedListener,OnI
 
     public void loadMore1(int count) {
         Log.e("error", String.valueOf(count));
-        String url = "http://wwwgyaampe.com/osaapasaa/list.php?" + "page="+count + "&table=popular";
+        String url = "http://www.osaapasaa.com.np/list.php?" + "page=" + count + "&table=popular";
         detailsRecyclerAdapter = new PopularRecyclerAdapter(getActivity(), homePopulars, this);
         recyclerView1.setAdapter(detailsRecyclerAdapter);
 
@@ -290,8 +278,9 @@ public class HomeFragment extends Fragment implements OnItemSelectedListener,OnI
 
                         HomePopular h = new HomePopular();
                         String img = post.getString("img1");
-                        h.setImage_path("http://wwwgyaampe.com/img/popular" + img);
+                        h.setImage_path("http://www.osaapasaa.com.np/img/popular" + img);
                         h.setName(post.getString("name"));
+                        h.setProduct_id(post.getString("product_id"));
                         h.setPrice(Integer.parseInt(post.getString("price")));
                         homePopulars.add(h);
 
@@ -313,53 +302,73 @@ public class HomeFragment extends Fragment implements OnItemSelectedListener,OnI
     }
 
     public void detailsOffer() {
-        offer.setImageUrl("http://wwwgyaampe.com/img/offer/ScHb169.jpg", mImageLoader);
+        String url = "http://www.osaapasaa.com.np/list.php?table=offer";
+
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        showPd();
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+
+                hidePD();
+
+                try {
+                    JSONArray home = response.getJSONArray("home");
+                    JSONObject post = home.getJSONObject(0);
+                    offer.setImageUrl(post.getString("img1"), mImageLoader);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                hidePD();
+            }
+        });
+
+        queue.add(jsonObjectRequest);
     }
+
     public void detailsSale() {
-        sale.setImageUrl("http://wwwgyaampe.com/img/offer/ScHb169.jpg", mImageLoader);
+        String url = "http://www.osaapasaa.com.np/list.php?table=sale";
+
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        showPd();
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+
+                hidePD();
+
+                try {
+                    JSONArray home = response.getJSONArray("home");
+                    JSONObject post = home.getJSONObject(0);
+                    sale.setImageUrl(post.getString("img1"), mImageLoader);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                hidePD();
+            }
+        });
+
+        queue.add(jsonObjectRequest);
     }
 
     @Override
-    public void onItemSelect() {
-        fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Bundle bundle = new Bundle();
-        bundle.putString("dbname", "Popular");
-        DisplayingFragment fragment = new DisplayingFragment();
-        fragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.fragments, fragment, DisplayingFragment.class.getName());
-        fragmentTransaction.addToBackStack(((AppCompatActivity) getActivity()).getSupportActionBar().getTitle().toString());
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Popular");
-        fragmentTransaction.commit();
-
-    }
-
-    @Override
-    public void onItemSelected(int itemId) {
-        fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Bundle bundle = new Bundle();
-        bundle.putString("dbname", "offer");
-        DisplayingFragment fragment = new DisplayingFragment();
-        fragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.fragments, fragment, DisplayingFragment.class.getName());
-        fragmentTransaction.addToBackStack(((AppCompatActivity) getActivity()).getSupportActionBar().getTitle().toString());
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Offer");
-        fragmentTransaction.commit();
-
-    }
-
-    @Override
-    public void select() {
-        fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Bundle bundle = new Bundle();
-        bundle.putString("dbname", "sale");
-        DisplayingFragment fragment = new DisplayingFragment();
-        fragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.fragments, fragment, DisplayingFragment.class.getName());
-        fragmentTransaction.addToBackStack(((AppCompatActivity) getActivity()).getSupportActionBar().getTitle().toString());
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Sale");
-        fragmentTransaction.commit();
+    public void onItemSelect(int product_id) {
+        Intent in = new Intent(getActivity(), DetailsActivity.class);
+        in.putExtra("id", homePopulars.get(product_id).getProduct_id());
+        Log.e("error", homePopulars.get(product_id).getProduct_id());
+        in.putExtra("table", "popular");
+        startActivity(in);
     }
 }

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
+import android.util.Log;
 
 import com.lingme.anand.lingme.Activity.Pojo.User;
 
@@ -74,6 +75,7 @@ public class ServerRequest {
                 e1.printStackTrace();
             }
             base64 = Base64.encodeToString(password, Base64.NO_WRAP);
+            Log.i("base64",base64);
             dataToSend.add(new BasicNameValuePair("username", user.getUsername()));
             dataToSend.add(new BasicNameValuePair("password", base64));
 

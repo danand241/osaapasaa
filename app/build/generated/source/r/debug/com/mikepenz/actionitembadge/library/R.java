@@ -31,40 +31,40 @@ public final class R {
 		public static final int badge = 0x7f02003b;
 	}
 	public static final class id {
-		public static final int iconics_tag_id = 0x7f0d0005;
-		public static final int menu_badge = 0x7f0d00eb;
-		public static final int menu_badge_icon = 0x7f0d00ea;
+		public static final int iconics_tag_id = 0x7f0e0005;
+		public static final int menu_badge = 0x7f0e00fa;
+		public static final int menu_badge_icon = 0x7f0e00f9;
 	}
 	public static final class layout {
-		public static final int menu_badge = 0x7f04002d;
-		public static final int menu_badge_large = 0x7f04002e;
+		public static final int menu_badge = 0x7f040031;
+		public static final int menu_badge_large = 0x7f040032;
 	}
 	public static final class string {
-		public static final int app_name = 0x7f070011;
-		public static final int define_AndroidActionItemBadge = 0x7f070013;
-		public static final int define_AndroidIconics = 0x7f070014;
-		public static final int library_AndroidActionItemBadge_author = 0x7f070015;
-		public static final int library_AndroidActionItemBadge_authorWebsite = 0x7f070016;
-		public static final int library_AndroidActionItemBadge_isOpenSource = 0x7f070017;
-		public static final int library_AndroidActionItemBadge_libraryDescription = 0x7f070018;
-		public static final int library_AndroidActionItemBadge_libraryName = 0x7f070019;
-		public static final int library_AndroidActionItemBadge_libraryVersion = 0x7f07001a;
-		public static final int library_AndroidActionItemBadge_libraryWebsite = 0x7f07001b;
-		public static final int library_AndroidActionItemBadge_licenseId = 0x7f07001c;
-		public static final int library_AndroidActionItemBadge_owner = 0x7f07001d;
-		public static final int library_AndroidActionItemBadge_repositoryLink = 0x7f07001e;
-		public static final int library_AndroidActionItemBadge_year = 0x7f07001f;
-		public static final int library_AndroidIconics_author = 0x7f070020;
-		public static final int library_AndroidIconics_authorWebsite = 0x7f070021;
-		public static final int library_AndroidIconics_isOpenSource = 0x7f070022;
-		public static final int library_AndroidIconics_libraryDescription = 0x7f070023;
-		public static final int library_AndroidIconics_libraryName = 0x7f070024;
-		public static final int library_AndroidIconics_libraryVersion = 0x7f070025;
-		public static final int library_AndroidIconics_libraryWebsite = 0x7f070026;
-		public static final int library_AndroidIconics_licenseId = 0x7f070027;
-		public static final int library_AndroidIconics_owner = 0x7f070028;
-		public static final int library_AndroidIconics_repositoryLink = 0x7f070029;
-		public static final int library_AndroidIconics_year = 0x7f07002a;
+		public static final int app_name = 0x7f080031;
+		public static final int define_AndroidActionItemBadge = 0x7f080035;
+		public static final int define_AndroidIconics = 0x7f080036;
+		public static final int library_AndroidActionItemBadge_author = 0x7f08003b;
+		public static final int library_AndroidActionItemBadge_authorWebsite = 0x7f08003c;
+		public static final int library_AndroidActionItemBadge_isOpenSource = 0x7f08003d;
+		public static final int library_AndroidActionItemBadge_libraryDescription = 0x7f08003e;
+		public static final int library_AndroidActionItemBadge_libraryName = 0x7f08003f;
+		public static final int library_AndroidActionItemBadge_libraryVersion = 0x7f080040;
+		public static final int library_AndroidActionItemBadge_libraryWebsite = 0x7f080041;
+		public static final int library_AndroidActionItemBadge_licenseId = 0x7f080042;
+		public static final int library_AndroidActionItemBadge_owner = 0x7f080043;
+		public static final int library_AndroidActionItemBadge_repositoryLink = 0x7f080044;
+		public static final int library_AndroidActionItemBadge_year = 0x7f080045;
+		public static final int library_AndroidIconics_author = 0x7f080046;
+		public static final int library_AndroidIconics_authorWebsite = 0x7f080047;
+		public static final int library_AndroidIconics_isOpenSource = 0x7f080048;
+		public static final int library_AndroidIconics_libraryDescription = 0x7f080049;
+		public static final int library_AndroidIconics_libraryName = 0x7f08004a;
+		public static final int library_AndroidIconics_libraryVersion = 0x7f08004b;
+		public static final int library_AndroidIconics_libraryWebsite = 0x7f08004c;
+		public static final int library_AndroidIconics_licenseId = 0x7f08004d;
+		public static final int library_AndroidIconics_owner = 0x7f08004e;
+		public static final int library_AndroidIconics_repositoryLink = 0x7f08004f;
+		public static final int library_AndroidIconics_year = 0x7f080050;
 	}
 	public static final class styleable {
 		public static final int[] Iconics = { 0x7f010079, 0x7f01007a, 0x7f01007b, 0x7f01007c, 0x7f01007d, 0x7f01007e, 0x7f01007f, 0x7f010080, 0x7f010081, 0x7f010082 };

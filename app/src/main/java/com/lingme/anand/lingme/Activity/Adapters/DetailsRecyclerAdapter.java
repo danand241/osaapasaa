@@ -44,11 +44,12 @@ import mehdi.sakout.fancybuttons.FancyButton;
  * Created by nepal on 6/11/2015.
  */
 public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecyclerAdapter.ListHolderView> {
-
+    int x=1,y=2,z=0;
     private List<ListProduct> list;
     private ImageLoader mImageLoader;
     private Context context;
     String checked;
+    String img1,img2,img3;
     DatabaseHelper db;
     public DetailsRecyclerAdapter(Context context, List<ListProduct> list) {
         this.context = context;
@@ -72,8 +73,8 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
         holder.networkImageView1.setImageUrl(details.getImg1(), mImageLoader);
         holder.networkImageView1.setDefaultImageResId(R.drawable.logo);
         holder.name_product.setText("Name: " + details.getName().toString());
-        holder.price.setText("Price: Rs."+details.getPrice() + "");
-        holder.brand.setText("Brand: "+details.getBrand());
+        holder.price.setText("Price: Rs." + details.getPrice() + "");
+        holder.brand.setText("Brand: " + details.getBrand());
         holder.stock.setText("Stock: " + details.getStock());
         holder.description_detail.setText(details.getDescription());
         holder.m.setText(details.getM());
@@ -86,6 +87,12 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
         holder.networkImageView2.setDefaultImageResId(R.drawable.logo);
         holder.networkImageView3.setImageUrl(details.getImg3(), mImageLoader);
         holder.networkImageView3.setDefaultImageResId(R.drawable.logo);
+        holder.networkImageView1.setTag(details.getImg1());
+        holder.networkImageView2.setTag(details.getImg2());
+        holder.networkImageView3.setTag(details.getImg3());
+        img1 = holder.networkImageView1.getTag().toString();
+        img2 = holder.networkImageView2.getTag().toString();
+        img3 = holder.networkImageView3.getTag().toString();
         Typeface tf = Typeface.createFromAsset(context.getAssets(),
                 "OsaapasaaText-Regular.ttf");
         holder.name_product.setTypeface(tf);
@@ -105,15 +112,80 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
         holder.networkImageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.networkImageView1.setImageUrl(details.getImg3(),mImageLoader);
-                holder.networkImageView2.setImageUrl(details.getImg1(),mImageLoader);
+
+                if(holder.networkImageView1.getTag().toString().equals(img2)){
+                    if(holder.networkImageView2.getTag().toString().equals(img3)) {
+                        holder.networkImageView1.setImageUrl(details.getImg3(), mImageLoader);
+                        holder.networkImageView2.setImageUrl(details.getImg2(), mImageLoader);
+                        holder.networkImageView1.setTag(details.getImg3());
+                        holder.networkImageView2.setTag(details.getImg2());
+                    }else {
+                        holder.networkImageView1.setImageUrl(details.getImg1(), mImageLoader);
+                        holder.networkImageView2.setImageUrl(details.getImg2(), mImageLoader);
+                        holder.networkImageView1.setTag(details.getImg1());
+                        holder.networkImageView2.setTag(details.getImg2());
+                    }
+                }
+                else if(holder.networkImageView1.getTag().toString().equals(img3)){
+                    if(holder.networkImageView2.getTag().toString().equals(img2)) {
+                        holder.networkImageView1.setImageUrl(details.getImg2(), mImageLoader);
+                        holder.networkImageView2.setImageUrl(details.getImg3(), mImageLoader);
+                        holder.networkImageView1.setTag(details.getImg2());
+                        holder.networkImageView2.setTag(details.getImg3());
+                    }
+                    else {
+                        holder.networkImageView1.setImageUrl(details.getImg3(), mImageLoader);
+                        holder.networkImageView3.setImageUrl(details.getImg1(), mImageLoader);
+                        holder.networkImageView1.setTag(details.getImg3());
+                        holder.networkImageView3.setTag(details.getImg1());
+                    }
+                }
+                else
+                {
+                    holder.networkImageView1.setImageUrl(details.getImg2(), mImageLoader);
+                    holder.networkImageView2.setImageUrl(details.getImg1(), mImageLoader);
+                    holder.networkImageView1.setTag(details.getImg2());
+                    holder.networkImageView2.setTag(details.getImg1());
+                }
             }
         });
         holder.networkImageView3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.networkImageView1.setImageUrl(details.getImg2(),mImageLoader);
-                holder.networkImageView3.setImageUrl(details.getImg1(),mImageLoader);
+                if(holder.networkImageView1.getTag().toString().equals(img2)){
+                    if(holder.networkImageView3.getTag().toString().equals(img1)) {
+                        holder.networkImageView1.setImageUrl(details.getImg1(), mImageLoader);
+                        holder.networkImageView3.setImageUrl(details.getImg2(), mImageLoader);
+                        holder.networkImageView1.setTag(details.getImg1());
+                        holder.networkImageView3.setTag(details.getImg2());
+                    }else {
+                        holder.networkImageView1.setImageUrl(details.getImg3(), mImageLoader);
+                        holder.networkImageView3.setImageUrl(details.getImg1(), mImageLoader);
+                        holder.networkImageView1.setTag(details.getImg3());
+                        holder.networkImageView3.setTag(details.getImg1());
+                    }
+                }
+                else if(holder.networkImageView1.getTag().toString().equals(img3)){
+                    if(holder.networkImageView3.getTag().toString().equals(img2)) {
+                        holder.networkImageView1.setImageUrl(details.getImg2(), mImageLoader);
+                        holder.networkImageView3.setImageUrl(details.getImg3(), mImageLoader);
+                        holder.networkImageView1.setTag(details.getImg2());
+                        holder.networkImageView3.setTag(details.getImg3());
+                    }
+                    else {
+                        holder.networkImageView1.setImageUrl(details.getImg1(), mImageLoader);
+                        holder.networkImageView2.setImageUrl(details.getImg2(), mImageLoader);
+                        holder.networkImageView1.setTag(details.getImg1());
+                        holder.networkImageView2.setTag(details.getImg2());
+                    }
+                }
+                else
+                {
+                    holder.networkImageView1.setImageUrl(details.getImg3(), mImageLoader);
+                    holder.networkImageView3.setImageUrl(details.getImg1(), mImageLoader);
+                    holder.networkImageView1.setTag(details.getImg3());
+                    holder.networkImageView3.setTag(details.getImg1());
+                }
             }
         });
         if(details.getL().isEmpty() == true && details.getM().isEmpty() == true && details.getS().isEmpty() == true && details.getXl().isEmpty() == true && details.getXxl().isEmpty() == true){

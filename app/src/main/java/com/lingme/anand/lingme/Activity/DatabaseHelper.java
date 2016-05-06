@@ -189,6 +189,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             product.setStock(cursor.getString(cursor.getColumnIndex(STOCK)));
             product.setTable_name(cursor.getString(cursor.getColumnIndex(TABL_NAME)));
             product.setImg1(cursor.getString(cursor.getColumnIndex(IMAGE)));
+            product.setSize(cursor.getString(cursor.getColumnIndex(SIZE)));
             Log.i("error",cursor.getString(cursor.getColumnIndex(PRODUCT_ID))+cursor.getString(cursor.getColumnIndex(IMAGE)));
             listProductsbas.add(product);
         }
@@ -214,10 +215,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             product.setStock(cursor.getString(cursor.getColumnIndex(STOCK)));
             product.setTable_name(cursor.getString(cursor.getColumnIndex(TABL_NAME)));
             product.setImg1(cursor.getString(cursor.getColumnIndex(IMAGE)));
+            product.setSize(cursor.getString(cursor.getColumnIndex(SIZE)));
             Log.i("error",cursor.getString(cursor.getColumnIndex(PRODUCT_ID))+cursor.getString(cursor.getColumnIndex(IMAGE)));
             listProducts.add(product);
         }
         return listProducts;
+    }
+
+    public void deleteAll()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME_BAS,null,null);
+        db.close();
     }
 
 }

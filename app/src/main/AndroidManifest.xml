@@ -3,6 +3,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <permission android:name="com.lingme.anand.lingme.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.lingme.anand.lingme.permission.C2D_MESSAGE" />
     <supports-screens android:resizeable="true"
     android:smallScreens="true"
     android:normalScreens="true"
@@ -13,7 +17,31 @@
     android:compatibleWidthLimitDp="320"
     android:largestWidthLimitDp="320"/>
     <application android:allowBackup="true" android:label="@string/app_name"
-        android:icon="@drawable/logo" android:theme="@style/AppTheme">
+        android:icon="@mipmap/ic_launcher" android:theme="@style/AppTheme">
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.lingme.anand.lingme" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name=".Activity.GCMPushServiceListener"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".Activity.GCMRegistrationIntentService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+        <meta-data android:name="android.app.searchable" android:resource="@xml/searchable"></meta-data>
         <activity
             android:name="com.lingme.anand.lingme.Activity.SplashActivity"
             android:label="@string/app_name"
@@ -35,7 +63,6 @@
                 <action android:name="com.lingme.anand.lingme.Activity.HomeActivity"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".Activity.DetailsActivity"
@@ -44,6 +71,17 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.lingme.anand.lingme.Activity.DetailsActivity"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".Activity.SearchActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.lingme.anand.lingme.Activity.SearchActivity"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 

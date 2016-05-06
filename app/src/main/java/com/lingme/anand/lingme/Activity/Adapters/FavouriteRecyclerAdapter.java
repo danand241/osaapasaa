@@ -108,6 +108,8 @@ public class FavouriteRecyclerAdapter extends RecyclerView.Adapter<FavouriteRecy
                 list.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, list.size());
+                ((AppCompatActivity) context).getSupportActionBar().invalidateOptionsMenu();
+                HomeActivity.fav_badge--;
                 delete.delete();
             }
         });

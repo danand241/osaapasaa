@@ -100,12 +100,14 @@ public class DisplayingFragment extends Fragment implements OnItemSelectedListen
 
     public void updateList() {
 
-        String wholeUrl = "http://wwwgyaampe.com/osaapasaa/list.php?table="+dbname;
-
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        String wholeUrl = "http://www.osaapasaa.com.np/list.php?table="+dbname;
 
         necklaceRecyclerAdapter = new NecklaceRecyclerAdapter(getActivity(), listProducts, this);
         recyclerView.setAdapter(necklaceRecyclerAdapter);
+
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+
+        necklaceRecyclerAdapter.clearAdapter();
         showPd();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, wholeUrl, null, new Response.Listener<JSONObject>()
@@ -124,7 +126,7 @@ public class DisplayingFragment extends Fragment implements OnItemSelectedListen
                         JSONObject post = results.getJSONObject(i);
 
                         ListProduct h = new ListProduct();
-                        h.setImg1("http://wwwgyaampe.com/img/" + dbname + post.getString("img1"));
+                        h.setImg1("http://www.osaapasaa.com.np/img/" + dbname + post.getString("img1"));
                         h.setName(post.getString("name"));
                         h.setProductId(post.getString("product_id"));
                         h.setPrice(Integer.parseInt(post.getString("price")));
@@ -139,24 +141,7 @@ public class DisplayingFragment extends Fragment implements OnItemSelectedListen
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //  VolleyLog.d(TAG, "Error" + error.getMessage());
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                        getActivity());
-
-                // Setting Dialog Title
-                alertDialog.setTitle("FAILED");
-
-                // Setting Dialog Message
-                alertDialog.setMessage("Oops something went wrong");
-
-                // Setting Icon to Dialog
-                alertDialog.setIcon(R.drawable.logo);
-
-                // Setting OK Button
-                alertDialog.setPositiveButton("OK", null);
-
-                // Showing Alert Message
-                alertDialog.show();
+            hidePD();
             }
         });
 
@@ -179,8 +164,8 @@ public class DisplayingFragment extends Fragment implements OnItemSelectedListen
 
     public void loadMore(int page)
     {
-        String url = "http://wwwgyaampe.com/osaapasaa/list.php?"+"page="+page+"&table="+dbname;
-
+        String url = "http://www.osaapasaa.com.np/list.php?"+"page="+page+"&table="+dbname;
+        Log.i("pop",dbname);
         necklaceRecyclerAdapter = new NecklaceRecyclerAdapter(getActivity(), listProducts, this);
         recyclerView.setAdapter(necklaceRecyclerAdapter);
 
@@ -202,12 +187,11 @@ public class DisplayingFragment extends Fragment implements OnItemSelectedListen
                         JSONObject post = home.getJSONObject(i);
 
                         ListProduct h = new ListProduct();
-                        h.setImg1("http://wwwgyaampe.com/img/" + dbname + post.getString("img1"));
+                        h.setImg1("http://www.osaapasaa.com.np/" + dbname + post.getString("img1"));
                         h.setName(post.getString("name"));
                         h.setProductId(post.getString("product_id"));
                         h.setPrice(Integer.parseInt(post.getString("price")));
                         listProducts.add(h);
-
 
                     }
                 } catch (Exception e) {
@@ -219,23 +203,6 @@ public class DisplayingFragment extends Fragment implements OnItemSelectedListen
             @Override
             public void onErrorResponse(VolleyError error) {
                 hidePD();
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                        getActivity());
-
-                // Setting Dialog Title
-                alertDialog.setTitle("FAILED");
-
-                // Setting Dialog Message
-                alertDialog.setMessage("Oops something went wrong");
-
-                // Setting Icon to Dialog
-                alertDialog.setIcon(R.drawable.logo);
-
-                // Setting OK Button
-                alertDialog.setPositiveButton("OK", null);
-
-                // Showing Alert Message
-                alertDialog.show();;
             }
         });
         queue.add(jsonObjectRequest);

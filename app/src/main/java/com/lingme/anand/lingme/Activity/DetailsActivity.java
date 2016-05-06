@@ -1,6 +1,7 @@
 package com.lingme.anand.lingme.Activity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -59,8 +60,8 @@ import java.util.Map;
  */
 public class DetailsActivity extends AppCompatActivity{
     RecyclerView recyclerView;
-    String url = "http://wwwgyaampe.com/osaapasaa/details.php";
-    String inserUrl= "http://wwwgyaampe.com/osaapasaa/order.php";
+    String url = "http://www.osaapasaa.com.np/details.php";
+    String inserUrl= "http://www.osaapasaa.com.np/order.php";
     private DetailsRecyclerAdapter detailsRecyclerAdapter;
     String id;
     String table;
@@ -73,6 +74,7 @@ public class DetailsActivity extends AppCompatActivity{
     DatabaseHelper db;
     public static String size;
     AppLocalStore appLocalStore;
+    RequestQueue requestQueue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,9 +119,9 @@ public class DetailsActivity extends AppCompatActivity{
     public void details() {
 
         String path = url + "?table=" + table + "&id=" + id;
-        RequestQueue queue = Volley.newRequestQueue(this);
         detailsRecyclerAdapter = new DetailsRecyclerAdapter(getApplicationContext(), listDetails);
         recyclerView.setAdapter(detailsRecyclerAdapter);
+        requestQueue = Volley.newRequestQueue(this);
         showPd();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, path, null, new Response.Listener<JSONObject>() {
@@ -140,12 +142,12 @@ public class DetailsActivity extends AppCompatActivity{
                         String img1 = post.getString("img1");
                         String img2 = post.getString("img2");
                         String img3 = post.getString("img3");
-                        h.setImg1("http://wwwgyaampe.com/img/" + table + img1);
+                        h.setImg1("http://www.osaapasaa.com.np/img/" + table + img1);
                         h.setName(post.getString("name"));
                         h.setProductId(post.getString("product_id"));
                         h.setPrice(Integer.parseInt(post.getString("price")));
-                        h.setImg2("http://wwwgyaampe.com/img/" + table + img2);
-                        h.setImg3("http://wwwgyaampe.com/img/" + table + img3);
+                        h.setImg2("http://www.osaapasaa.com.np/img/" + table + img2);
+                        h.setImg3("http://www.osaapasaa.com.np/img/" + table + img3);
                         h.setBrand(post.getString("brand"));
                         h.setDescription(post.getString("description"));
                         h.setM(post.getString("m"));
@@ -187,7 +189,7 @@ public class DetailsActivity extends AppCompatActivity{
             }
         });
 
-        queue.add(jsonObjectRequest);
+        requestQueue.add(jsonObjectRequest);
     }
 
     public void showPd() {
@@ -292,7 +294,7 @@ public class DetailsActivity extends AppCompatActivity{
                         this);
 
                 // Setting Dialog Title
-                alertDialog.setTitle("Failed to Add");
+                alertDialog.setTitle("FAILED");
 
                 // Setting Dialog Message
                 alertDialog.setMessage("Please specify size");
@@ -310,7 +312,6 @@ public class DetailsActivity extends AppCompatActivity{
                     UserLocalStore userLocalStore = new UserLocalStore(this);
                     if (userLocalStore.getUserLogIn() == true) {
                         sendToServer();
-                        size = null;
                     } else {
                         Intent in = new Intent(this, HomeActivity.class);
                         in.putExtra("fragment", "LoginFragment");
@@ -330,39 +331,44 @@ public class DetailsActivity extends AppCompatActivity{
         final UserLocalStore userLocalStores = new UserLocalStore(this);
         final String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         final String time = new SimpleDateFormat("hh:mm").format(new Date());
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
         showProgressDialog();
         final StringRequest request = new StringRequest(Request.Method.POST, inserUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
                 hideProgressDialog();
-                Log.i("sss",s);
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                       DetailsActivity.this);
+                Log.i("string", s);
+                if (s.length() == 0) {
+                    Log.i("hiiii", s);
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                            DetailsActivity.this);
 
-                // Setting Dialog Title
-                alertDialog.setTitle("THANK YOU");
+                    // Setting Dialog Title
+                    alertDialog.setTitle("THANK YOU");
 
-                // Setting Dialog Message
-                alertDialog.setMessage("you will be contacted soon");
+                    // Setting Dialog Message
+                    alertDialog.setMessage("you will be contacted soon");
 
-                // Setting Icon to Dialog
-                alertDialog.setIcon(R.drawable.logo);
+                    // Setting Icon to Dialog
+                    alertDialog.setIcon(R.drawable.logo);
 
-                // Setting OK Button
-                alertDialog.setPositiveButton("OK", null);
-
-                // Showing Alert Message
-                alertDialog.show();
-                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                    // Setting OK Button
+                    alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivity(new Intent(DetailsActivity.this, HomeActivity.class));
+                        }
+                    });
+                    // Showing Alert Message
+                    alertDialog.show();
+                    size = null;
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-
                 hideProgressDialog();
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                        DetailsActivity.this);
+                       DetailsActivity.this);
 
                 // Setting Dialog Title
                 alertDialog.setTitle("FAILED");
@@ -378,7 +384,6 @@ public class DetailsActivity extends AppCompatActivity{
 
                 // Showing Alert Message
                 alertDialog.show();
-
             }
         }) {
             @Override
@@ -393,6 +398,7 @@ public class DetailsActivity extends AppCompatActivity{
                 parameters.put("price", String.valueOf(favList.getPrice()));
                 parameters.put("date", date);
                 parameters.put("time", time);
+                Log.i("value",userLocalStores.getLoggedUser().getUsername()+userLocalStores.getLoggedUser().getEmail()+userLocalStores.getLoggedUser().getPhoneNumber().toString()+favList.getName()+favList.getPrice()+date+time+size+table);
                 return parameters;
             }
         };

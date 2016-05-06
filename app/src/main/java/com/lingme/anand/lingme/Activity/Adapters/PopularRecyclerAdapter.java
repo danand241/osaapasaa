@@ -48,7 +48,7 @@ public class PopularRecyclerAdapter extends RecyclerView.Adapter<PopularRecycler
                 "OsaapasaaText-Regular.ttf");
         holder.networkImageView.setImageUrl(details.getImage_path(), mImageLoader);
         holder.networkImageView.setDefaultImageResId(R.drawable.logo);
-        holder.name_price_popular.setText(details.getName()+"\n"+"Rs."+details.getPrice());
+        holder.name_price_popular.setText(details.getName() + "\n" + "Rs." + details.getPrice());
         holder.name_price_popular.setTypeface(tf);
 
     }
@@ -74,7 +74,7 @@ public class PopularRecyclerAdapter extends RecyclerView.Adapter<PopularRecycler
 
         @Override
         public void onClick(View v) {
-            select.onItemSelect();
+            select.onItemSelect(getAdapterPosition());
         }
     }
 }
